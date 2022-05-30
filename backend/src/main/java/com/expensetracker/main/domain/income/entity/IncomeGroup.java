@@ -1,4 +1,4 @@
-package com.expensetracker.main.domain.expense.entity;
+package com.expensetracker.main.domain.income.entity;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -16,19 +16,19 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "expense_groups")
-public class ExpenseGroup extends BaseEntity {
+@Table(name = "income_groups")
+public class IncomeGroup extends BaseEntity {
     @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "description", nullable = false)
     private String description;
 
-    @OneToMany(mappedBy = "expenseGroup", cascade = CascadeType.ALL)
-    private List<ExpenseEntity> expenses = new ArrayList<>();
+    @OneToMany(mappedBy = "incomeGroup", cascade = CascadeType.ALL)
+    private List<IncomeEntity> incomes = new ArrayList<>();
 
     @Builder
-    public ExpenseGroup(Long id, String name, String description) {
+    public IncomeGroup(Long id, String name, String description) {
         super(id);
         this.name = name;
         this.description = description;

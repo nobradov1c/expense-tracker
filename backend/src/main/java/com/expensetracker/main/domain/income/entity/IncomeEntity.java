@@ -1,4 +1,4 @@
-package com.expensetracker.main.domain.expense.entity;
+package com.expensetracker.main.domain.income.entity;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -17,8 +17,8 @@ import com.expensetracker.main.domain.common.entity.BaseEntity;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "expenses")
-public class ExpenseEntity extends BaseEntity {
+@Table(name = "incomes")
+public class IncomeEntity extends BaseEntity {
     @Column(name = "description", nullable = false)
     private String description;
 
@@ -26,14 +26,14 @@ public class ExpenseEntity extends BaseEntity {
     private Double amount;
 
     @ManyToOne
-    @JoinColumn(name = "expense_group_id")
-    private ExpenseGroup expenseGroup;
+    @JoinColumn(name = "income_group_id")
+    private IncomeGroup incomeGroup;
 
     @Builder
-    public ExpenseEntity(Long id, String description, Double amount, ExpenseGroup expenseGroup) {
+    public IncomeEntity(Long id, String description, Double amount, IncomeGroup incomeGroup) {
         super(id);
         this.description = description;
         this.amount = amount;
-        this.expenseGroup = expenseGroup;
+        this.incomeGroup = incomeGroup;
     }
 }
