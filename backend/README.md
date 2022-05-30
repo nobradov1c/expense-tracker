@@ -8,6 +8,8 @@ How to run:
 
   `docker run --name some-mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root -d mysql:latest`
 
+  - create the schema `expensetracker` if necessary
+
 - maven
 
   `.\mvnw.cmd spring-boot:run`
