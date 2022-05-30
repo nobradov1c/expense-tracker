@@ -21,5 +21,5 @@ Docs:
 
 Quick links:
 
-- [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
-- [http://localhost:8080/v3/api-docs](http://localhost:8080/v3/api-docs) - json
+- [http://localhost:8080/api/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+- [http://localhost:8080/api/v3/api-docs](http://localhost:8080/v3/api-docs) - json
