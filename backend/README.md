@@ -13,3 +13,13 @@ How to run:
 - maven
 
   `.\mvnw.cmd spring-boot:run`
+
+Docs:
+
+- [http://server:port/context-path/swagger-ui.html](http://server:port/context-path/swagger-ui.html)
+- [http://server:port/context-path/v3/api-docs](http://server:port/context-path/v3/api-docs)
+
+Quick links:
+
+- [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+- [http://localhost:8080/v3/api-docs](http://localhost:8080/v3/api-docs) - json
