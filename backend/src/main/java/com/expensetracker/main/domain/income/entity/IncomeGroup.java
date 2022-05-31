@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import com.expensetracker.main.domain.common.entity.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,7 @@ public class IncomeGroup extends BaseEntity {
     @Column(name = "description", nullable = false)
     private String description;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "incomeGroup", cascade = CascadeType.ALL)
     private List<IncomeEntity> incomes = new ArrayList<>();
 

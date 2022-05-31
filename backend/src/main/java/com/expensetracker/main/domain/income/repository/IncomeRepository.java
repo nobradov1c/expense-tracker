@@ -8,4 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface IncomeRepository extends JpaRepository<IncomeEntity, Long> {
     List<IncomeEntity> findByIncomeGroupId(Long incomeGroupId);
+
+    List<IncomeEntity> findFirst5ByOrderByUpdatedAtDesc();
 }
