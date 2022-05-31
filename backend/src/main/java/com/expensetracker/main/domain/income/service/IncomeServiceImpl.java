@@ -44,4 +44,9 @@ public class IncomeServiceImpl implements IncomeService {
         return totalIncomeAmountDto;
     }
 
+    @Override
+    public List<IncomeEntity> getLast5IncomeChanges() {
+        return incomeRepository.findFirst5ByOrderByUpdatedAtDesc();
+    }
+
 }

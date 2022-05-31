@@ -1,6 +1,9 @@
 package com.expensetracker.main.domain.income.controller;
 
+import java.util.List;
+
 import com.expensetracker.main.domain.income.dto.TotalIncomeAmountDto;
+import com.expensetracker.main.domain.income.entity.IncomeEntity;
 import com.expensetracker.main.domain.income.service.IncomeService;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,5 +26,11 @@ public class IncomeController {
     @GetMapping("/total/group/{incomeGroupId}")
     public TotalIncomeAmountDto getTotalIncomeAmount(Long incomeGroupId) {
         return incomeService.getTotalIncomeAmount(incomeGroupId);
+    }
+
+    // last 5 income changes
+    @GetMapping("/last-5-changes")
+    public List<IncomeEntity> getLast5IncomeChanges() {
+        return incomeService.getLast5IncomeChanges();
     }
 }

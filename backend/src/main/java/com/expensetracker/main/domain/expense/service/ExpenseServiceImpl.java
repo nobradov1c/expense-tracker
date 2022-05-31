@@ -44,4 +44,9 @@ public class ExpenseServiceImpl implements ExpenseService {
         return totalExpenseAmountDto;
     }
 
+    @Override
+    public List<ExpenseEntity> getLast5ExpenseChanges() {
+        return expenseRepository.findFirst5ByOrderByUpdatedAtDesc();
+    }
+
 }
