@@ -1,5 +1,7 @@
 package com.expensetracker.main.domain.expense.dto;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,15 +10,15 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class TotalExpenseAmountDto {
-    private Double totalAmount;
+    private BigDecimal totalAmount;
     private Long expenseGroupId;
 
-    public TotalExpenseAmountDto(Double totalAmount) {
+    public TotalExpenseAmountDto(BigDecimal totalAmount) {
         this.totalAmount = totalAmount;
         this.expenseGroupId = null;
     }
 
-    public TotalExpenseAmountDto(Double totalAmount, Long expenseGroupId) {
+    public TotalExpenseAmountDto(BigDecimal totalAmount, Long expenseGroupId) {
         this.totalAmount = totalAmount;
         this.expenseGroupId = expenseGroupId;
     }

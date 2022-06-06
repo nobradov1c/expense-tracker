@@ -1,5 +1,6 @@
 package com.expensetracker.main.domain.income.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.expensetracker.main.domain.income.dto.TotalIncomeAmountDto;
@@ -17,12 +18,12 @@ public class IncomeServiceImpl implements IncomeService {
 
     @Override
     public TotalIncomeAmountDto getTotalIncomeAmount() {
-        Double totalAmount = 0.0;
+        BigDecimal totalAmount = new BigDecimal(0);
 
         List<IncomeEntity> incomes = incomeRepository.findAll();
 
         for (IncomeEntity income : incomes) {
-            totalAmount += income.getAmount();
+            totalAmount = totalAmount.add(income.getAmount());
         }
 
         TotalIncomeAmountDto totalIncomeAmountDto = new TotalIncomeAmountDto(totalAmount);
@@ -31,12 +32,12 @@ public class IncomeServiceImpl implements IncomeService {
 
     @Override
     public TotalIncomeAmountDto getTotalIncomeAmount(Long incomeGroupId) {
-        Double totalAmount = 0.0;
+        BigDecimal totalAmount = new BigDecimal(0);
 
         List<IncomeEntity> incomes = incomeRepository.findByIncomeGroupId(incomeGroupId);
 
         for (IncomeEntity income : incomes) {
-            totalAmount += income.getAmount();
+            totalAmount = totalAmount.add(income.getAmount());
         }
 
         TotalIncomeAmountDto totalIncomeAmountDto = new TotalIncomeAmountDto(totalAmount, incomeGroupId);

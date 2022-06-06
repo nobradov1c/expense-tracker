@@ -1,5 +1,6 @@
 package com.expensetracker.main.domain.expense.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.expensetracker.main.domain.expense.dto.TotalExpenseAmountDto;
@@ -17,12 +18,12 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     @Override
     public TotalExpenseAmountDto getTotalExpenseAmount() {
-        Double totalAmount = 0.0;
+        BigDecimal totalAmount = new BigDecimal(0);
 
         List<ExpenseEntity> expenses = expenseRepository.findAll();
 
         for (ExpenseEntity expense : expenses) {
-            totalAmount += expense.getAmount();
+            totalAmount = totalAmount.add(expense.getAmount());
         }
 
         TotalExpenseAmountDto totalExpenseAmountDto = new TotalExpenseAmountDto(totalAmount);
@@ -31,12 +32,12 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     @Override
     public TotalExpenseAmountDto getTotalExpenseAmount(Long expenseGroupId) {
-        Double totalAmount = 0.0;
+        BigDecimal totalAmount = new BigDecimal(0);
 
         List<ExpenseEntity> expenses = expenseRepository.findByExpenseGroupId(expenseGroupId);
 
         for (ExpenseEntity expense : expenses) {
-            totalAmount += expense.getAmount();
+            totalAmount = totalAmount.add(expense.getAmount());
         }
 
         TotalExpenseAmountDto totalExpenseAmountDto = new TotalExpenseAmountDto(totalAmount, expenseGroupId);
