@@ -1,0 +1,996 @@
+{
+	"info": {
+		"_postman_id": "2b117603-91b3-4afe-bf5e-e381be7e96c4",
+		"name": "ExpenseTrakerVega",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let response=pm.response.json();\r",
+									"// console.log(response['user']['token']);\r",
+									"pm.environment.set(\"authToken\", response['token']);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Nikola\",\r\n    \"email\": \"nik@gmail.com\",\r\n    \"password\": \"123123123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/auth/register",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let response=pm.response.json();\r",
+									"// console.log(response['user']['token']);\r",
+									"pm.environment.set(\"authToken\", response['token']);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"nik@gmail.com\",\r\n    \"password\": \"123123123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/auth/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "me",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/users/me",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"me"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "expenses",
+			"item": [
+				{
+					"name": "all",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/expenses",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"expenses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "all by group",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/expenses/all/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"expenses",
+								"all",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/expenses/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"expenses",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "total",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/expenses/total",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"expenses",
+								"total"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "total by group",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/expenses/total/group/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"expenses",
+								"total",
+								"group",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "last 5 changes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/expenses/last-5-changes",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"expenses",
+								"last-5-changes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create new",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\": \"voda\",\r\n    \"amount\": 400,\r\n    \"expenseGroupId\": 9\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/expenses",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"expenses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update one",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\": \"strujaddda\",\r\n    \"amount\": 1212122\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/expenses/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"expenses",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete by id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/expenses/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"expenses",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete all",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/expenses",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"expenses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete all by group",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/expenses/group/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"expenses",
+								"group",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "expense groups",
+			"item": [
+				{
+					"name": "all",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/expenses/groups",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"expenses",
+								"groups"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/expenses/groups/8",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"expenses",
+								"groups",
+								"8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create new",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"grupa\",\r\n    \"description\": \"mesto za sve test\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/expenses/groups",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"expenses",
+								"groups"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create new Copy",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"testnn\",\r\n    \"description\": \"mesto za sve nnn\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/expenses/groups/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"expenses",
+								"groups",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete by id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/expenses/groups/3",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"expenses",
+								"groups",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete all",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/expenses/groups",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"expenses",
+								"groups"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "incomes",
+			"item": [
+				{
+					"name": "all",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/incomes",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"incomes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "all by group",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/incomes/all/5",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"incomes",
+								"all",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/incomes/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"incomes",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "total",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/incomes/total",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"incomes",
+								"total"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "total by group",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/incomes/total/group/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"incomes",
+								"total",
+								"group",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "last 5 income changes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/incomes/last-5-changes",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"incomes",
+								"last-5-changes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create new",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\": \"plata\",\r\n    \"amount\": 4000,\r\n    \"incomeGroupId\": 5\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/incomes",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"incomes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update one",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\": \"plata\",\r\n    \"amount\": 1212122\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/incomes/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"incomes",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete by id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/incomes/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"incomes",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete all",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/incomes",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"incomes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete all by group",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/incomes/group/5",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"incomes",
+								"group",
+								"5"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "income groups",
+			"item": [
+				{
+					"name": "all",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/incomes/groups",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"incomes",
+								"groups"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/incomes/groups/8",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"incomes",
+								"groups",
+								"8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create new",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"marko grupa\",\r\n    \"description\": \"mesto za sve test\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/incomes/groups",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"incomes",
+								"groups"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create new Copy",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"testnn\",\r\n    \"description\": \"mesto za sve nnn\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/incomes/groups/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"incomes",
+								"groups",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete by id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/incomes/groups/6",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"incomes",
+								"groups",
+								"6"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete all",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/incomes/groups",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"incomes",
+								"groups"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "common",
+			"item": [
+				{
+					"name": "total amount",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/total-amount",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"total-amount"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{authToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
