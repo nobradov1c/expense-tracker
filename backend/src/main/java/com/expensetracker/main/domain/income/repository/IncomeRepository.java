@@ -25,4 +25,7 @@ public interface IncomeRepository extends JpaRepository<IncomeEntity, Long> {
 
     // deleteByUserId
     void deleteByUserId(Long userId);
+
+    // deleteByUserIdAndIncomeGroupId
+    void deleteByUserIdAndIncomeGroupId(Long userId, Long incomeGroupId);
 }

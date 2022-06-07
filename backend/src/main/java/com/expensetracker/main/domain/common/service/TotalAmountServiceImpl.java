@@ -20,10 +20,10 @@ public class TotalAmountServiceImpl implements TotalAmountService {
     private final IncomeRepository incomeRepository;
 
     @Override
-    public TotalAmountDto getTotalAmount() {
+    public TotalAmountDto getTotalAmount(Long userId) {
         BigDecimal totalExpenses = new BigDecimal(0);
 
-        List<ExpenseEntity> expenses = expenseRepository.findAll();
+        List<ExpenseEntity> expenses = expenseRepository.findByUserId(userId);
 
         for (ExpenseEntity expense : expenses) {
             totalExpenses = totalExpenses.add(expense.getAmount());
@@ -31,7 +31,7 @@ public class TotalAmountServiceImpl implements TotalAmountService {
 
         BigDecimal totalIncome = new BigDecimal(0);
 
-        List<IncomeEntity> incomes = incomeRepository.findAll();
+        List<IncomeEntity> incomes = incomeRepository.findByUserId(userId);
 
         for (IncomeEntity income : incomes) {
             totalIncome = totalIncome.add(income.getAmount());

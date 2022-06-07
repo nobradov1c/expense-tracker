@@ -49,12 +49,10 @@ public class IncomeServiceImpl implements IncomeService {
     public TotalIncomeAmountDto getTotalIncomeAmount(Long userId) {
         BigDecimal totalAmount = new BigDecimal(0);
 
-        if (userId != null) {
-            List<IncomeEntity> expenses = incomeRepository.findByUserId(userId);
+        List<IncomeEntity> expenses = incomeRepository.findByUserId(userId);
 
-            for (IncomeEntity expense : expenses) {
-                totalAmount = totalAmount.add(expense.getAmount());
-            }
+        for (IncomeEntity expense : expenses) {
+            totalAmount = totalAmount.add(expense.getAmount());
         }
 
         TotalIncomeAmountDto totalIncomeAmountDto = new TotalIncomeAmountDto(totalAmount);
@@ -65,19 +63,17 @@ public class IncomeServiceImpl implements IncomeService {
     public TotalIncomeAmountDto getTotalIncomeAmount(Long userId, Long incomeGroupId) {
         BigDecimal totalAmount = new BigDecimal(0);
 
-        if (userId != null && incomeGroupId != null) {
-            IncomeGroup incomeGroup = incomeGroupRepository.findById(incomeGroupId)
-                    .orElseThrow(() -> new AppException(MyErrorMessages.INCOME_GROUP_NOT_FOUND));
+        IncomeGroup incomeGroup = incomeGroupRepository.findById(incomeGroupId)
+                .orElseThrow(() -> new AppException(MyErrorMessages.INCOME_GROUP_NOT_FOUND));
 
-            if (!incomeGroup.getUser().getId().equals(userId)) {
-                throw new AppException(MyErrorMessages.INCOME_GROUP_NOT_FOUND);
-            }
+        if (!incomeGroup.getUser().getId().equals(userId)) {
+            throw new AppException(MyErrorMessages.INCOME_GROUP_NOT_FOUND);
+        }
 
-            List<IncomeEntity> expenses = incomeRepository.findByUserIdAndIncomeGroupId(userId, incomeGroupId);
+        List<IncomeEntity> expenses = incomeRepository.findByUserIdAndIncomeGroupId(userId, incomeGroupId);
 
-            for (IncomeEntity expense : expenses) {
-                totalAmount = totalAmount.add(expense.getAmount());
-            }
+        for (IncomeEntity expense : expenses) {
+            totalAmount = totalAmount.add(expense.getAmount());
         }
 
         TotalIncomeAmountDto totalIncomeAmountDto = new TotalIncomeAmountDto(totalAmount, incomeGroupId);
@@ -103,13 +99,10 @@ public class IncomeServiceImpl implements IncomeService {
         incomeEntity.setDescription(incomeDto.getDescription());
 
         if (incomeDto.getIncomeGroupId() != null) {
-            Optional<IncomeGroup> incomeGroup = incomeGroupRepository.findById(incomeDto.getIncomeGroupId());
+            IncomeGroup incomeGroup = incomeGroupRepository.findById(incomeDto.getIncomeGroupId())
+                    .orElseThrow(() -> new AppException(MyErrorMessages.INCOME_GROUP_NOT_FOUND));
 
-            if (incomeGroup.isPresent()) {
-                incomeEntity.setIncomeGroup(incomeGroup.get());
-            } else {
-                throw (new AppException(MyErrorMessages.INCOME_GROUP_NOT_FOUND));
-            }
+            incomeEntity.setIncomeGroup(incomeGroup);
         }
 
         UserEntity user = userRepository.findById(userId).get();
@@ -125,49 +118,35 @@ public class IncomeServiceImpl implements IncomeService {
     @Override
     @Transactional
     public IncomeEntity updateIncome(Long userId, Long expenseId, IncomeDto incomeDto) {
-        Optional<IncomeEntity> incomeEntity = incomeRepository.findById(expenseId);
+        IncomeEntity incomeEntity = incomeRepository.findById(expenseId)
+                .orElseThrow(() -> new AppException(MyErrorMessages.INCOME_NOT_FOUND));
 
-        if (incomeEntity.isPresent()) {
-            IncomeEntity expense = incomeEntity.get();
-
-            if (incomeDto.getAmount() != null) {
-                expense.setAmount(incomeDto.getAmount());
-            }
-            if (incomeDto.getDescription() != null) {
-                expense.setDescription(incomeDto.getDescription());
-            }
-
-            if (incomeDto.getIncomeGroupId() != null) {
-                Optional<IncomeGroup> incomeGroup = incomeGroupRepository.findById(incomeDto.getIncomeGroupId());
-
-                if (incomeGroup.isPresent()) {
-                    expense.setIncomeGroup(incomeGroup.get());
-                } else {
-
-                    throw (new AppException(MyErrorMessages.INCOME_GROUP_NOT_FOUND));
-                }
-            }
-
-            expense = incomeRepository.save(expense);
-            return expense;
-        } else {
-            throw (new AppException(MyErrorMessages.INCOME_NOT_FOUND));
+        if (incomeDto.getAmount() != null) {
+            incomeEntity.setAmount(incomeDto.getAmount());
         }
+        if (incomeDto.getDescription() != null) {
+            incomeEntity.setDescription(incomeDto.getDescription());
+        }
+
+        if (incomeDto.getIncomeGroupId() != null) {
+            IncomeGroup incomeGroup = incomeGroupRepository.findById(incomeDto.getIncomeGroupId())
+                    .orElseThrow(() -> new AppException(MyErrorMessages.INCOME_GROUP_NOT_FOUND));
+
+            incomeEntity.setIncomeGroup(incomeGroup);
+        }
+
+        incomeEntity = incomeRepository.save(incomeEntity);
+        return incomeEntity;
     }
 
     @Override
     @Transactional
     public void deleteIncome(Long userId, Long expenseId) {
-        Optional<IncomeEntity> incomeEntity = incomeRepository.findById(expenseId);
+        IncomeEntity incomeEntity = incomeRepository.findById(expenseId)
+                .orElseThrow(() -> new AppException(MyErrorMessages.INCOME_NOT_FOUND));
 
-        if (incomeEntity.isPresent()) {
-            IncomeEntity expense = incomeEntity.get();
-
-            if (expense.getUser().getId().equals(userId)) {
-                incomeRepository.delete(expense);
-            } else {
-                throw (new AppException(MyErrorMessages.INCOME_NOT_FOUND));
-            }
+        if (incomeEntity.getUser().getId().equals(userId)) {
+            incomeRepository.delete(incomeEntity);
         } else {
             throw (new AppException(MyErrorMessages.INCOME_NOT_FOUND));
         }
@@ -189,11 +168,8 @@ public class IncomeServiceImpl implements IncomeService {
             throw (new AppException(MyErrorMessages.INCOME_GROUP_NOT_FOUND));
         }
 
-        List<IncomeEntity> expenses = incomeRepository.findByUserIdAndIncomeGroupId(userId, incomeGroupId);
-
-        for (IncomeEntity expense : expenses) {
-            incomeRepository.delete(expense);
-        }
+        // batch delete
+        incomeRepository.deleteByUserIdAndIncomeGroupId(userId, incomeGroupId);
     }
 
     @Override

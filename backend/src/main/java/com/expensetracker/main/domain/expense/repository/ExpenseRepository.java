@@ -25,4 +25,7 @@ public interface ExpenseRepository extends JpaRepository<ExpenseEntity, Long> {
 
     // deleteByUserId
     void deleteByUserId(Long userId);
+
+    // deleteByUserIdAndExpenseGroupId
+    void deleteByUserIdAndExpenseGroupId(Long userId, Long expenseGroupId);
 }
