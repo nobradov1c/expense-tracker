@@ -4,17 +4,24 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import io.jsonwebtoken.JwtException;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class AppExceptionHandler {
     @ExceptionHandler(AppException.class)
     public ResponseEntity<ErrorMessages> handleAppException(AppException exception) {
         return responseErrorMessages(List.of(exception.getMessage()), exception.getError().getStatus());
+    }
+
+    @ExceptionHandler(JwtException.class)
+    public ResponseEntity<ErrorMessages> handleJwtException(JwtException exception) {
+        return responseErrorMessages(List.of("Invalid token"), HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -38,7 +45,7 @@ public class AppExceptionHandler {
     private String createFieldErrorMessage(FieldError fieldError) {
         return "[" +
                 fieldError.getField() +
-                "] must be " +
+                "] " +
                 fieldError.getDefaultMessage() +
                 ". your input: [" +
                 fieldError.getRejectedValue() +

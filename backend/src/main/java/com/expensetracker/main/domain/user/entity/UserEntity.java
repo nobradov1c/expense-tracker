@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -13,7 +14,9 @@ import javax.persistence.Table;
 
 import com.expensetracker.main.domain.common.entity.BaseEntity;
 import com.expensetracker.main.domain.expense.entity.ExpenseEntity;
+import com.expensetracker.main.domain.expense.entity.ExpenseGroup;
 import com.expensetracker.main.domain.income.entity.IncomeEntity;
+import com.expensetracker.main.domain.income.entity.IncomeGroup;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -41,12 +44,20 @@ public class UserEntity extends BaseEntity {
     private RoleEntity role;
 
     // list of expenses
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ExpenseEntity> expenses = new ArrayList<>();
 
+    // list of expense groups
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ExpenseGroup> expenseGroups = new ArrayList<>();
+
     // list of incomes
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<IncomeEntity> incomes = new ArrayList<>();
+
+    // list of income groups
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<IncomeGroup> incomeGroups = new ArrayList<>();
 
     @Builder
     public UserEntity(Long id, String name, String email, String password, RoleEntity role) {

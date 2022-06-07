@@ -12,10 +12,11 @@ public enum MyErrorMessages {
 
     USER_NOT_FOUND("user not found", HttpStatus.NOT_FOUND),
     ROLE_NOT_FOUND("role not found", HttpStatus.NOT_FOUND),
-    FOLLOW_NOT_FOUND("such follow not found", HttpStatus.NOT_FOUND),
-    ARTICLE_NOT_FOUND("article not found", HttpStatus.NOT_FOUND),
-    FAVORITE_NOT_FOUND("favorite not found", HttpStatus.NOT_FOUND),
-    COMMENT_NOT_FOUND("comment not found", HttpStatus.NOT_FOUND),
+    EXPENSE_NOT_FOUND("expense not found", HttpStatus.NOT_FOUND),
+    EXPENSE_GROUP_NOT_FOUND("expense group not found", HttpStatus.NOT_FOUND),
+    INCOME_NOT_FOUND("income not found", HttpStatus.NOT_FOUND),
+    INCOME_GROUP_NOT_FOUND("income group not found", HttpStatus.NOT_FOUND),
+    GENERIC_NOT_FOUND("resource not found", HttpStatus.NOT_FOUND),
     ;
 
     private final String message;

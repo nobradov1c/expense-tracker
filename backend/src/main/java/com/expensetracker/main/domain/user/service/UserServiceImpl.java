@@ -5,7 +5,7 @@ import java.util.Optional;
 import com.expensetracker.main.domain.user.dto.UserAuthDto;
 import com.expensetracker.main.domain.user.dto.UserDto;
 import com.expensetracker.main.domain.user.dto.UserLoginDto;
-import com.expensetracker.main.domain.user.dto.UserRegistraionDto;
+import com.expensetracker.main.domain.user.dto.UserRegistrationDto;
 import com.expensetracker.main.domain.user.entity.RoleEntity;
 import com.expensetracker.main.domain.user.entity.UserEntity;
 import com.expensetracker.main.domain.user.repository.RoleRepository;
@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto registration(final UserRegistraionDto registration) {
+    public UserDto registration(final UserRegistrationDto registration) {
         userRepository.findByEmail(registration.getEmail()).ifPresent(user -> {
             throw new AppException(MyErrorMessages.DUPLICATED_USER);
         });
