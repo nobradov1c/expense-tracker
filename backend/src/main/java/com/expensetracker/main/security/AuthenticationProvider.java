@@ -22,6 +22,7 @@ public class AuthenticationProvider {
         }
 
         UserAuthDto principal = UserAuthDto.builder()
+                .id(userDetail.getId())
                 .name(userDetail.getName())
                 .email(userDetail.getEmail())
                 .role(userDetail.getAuthorities().iterator().next().getAuthority())

@@ -1,12 +1,28 @@
 package com.expensetracker.main.domain.expense.controller;
 
 import java.util.List;
+import java.util.Optional;
 
+import javax.validation.Valid;
+
+import com.expensetracker.main.domain.expense.dto.ExpenseDto;
+import com.expensetracker.main.domain.expense.dto.ExpenseGroupDto;
 import com.expensetracker.main.domain.expense.dto.TotalExpenseAmountDto;
 import com.expensetracker.main.domain.expense.entity.ExpenseEntity;
+import com.expensetracker.main.domain.expense.entity.ExpenseGroup;
 import com.expensetracker.main.domain.expense.service.ExpenseService;
+import com.expensetracker.main.domain.user.dto.UserAuthDto;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,19 +34,132 @@ import lombok.RequiredArgsConstructor;
 public class ExpenseController {
     private final ExpenseService expenseService;
 
+    // get all expenses
+    @GetMapping
+    public List<ExpenseEntity> getAllExpenses(@AuthenticationPrincipal UserAuthDto authUser) {
+        return expenseService.getAllExpenses(authUser.getId());
+    }
+
+    // all by group
+    @GetMapping("/all/{expenseGroupId}")
+    public List<ExpenseEntity> getAllExpensesByGroup(@AuthenticationPrincipal UserAuthDto authUser,
+                                                     @PathVariable Long expenseGroupId) {
+        return expenseService.getAllExpensesByGroup(authUser.getId(), expenseGroupId);
+    }
+
+    // get by id
+    @GetMapping("/{expenseId}")
+    public ResponseEntity<?> getExpenseById(@AuthenticationPrincipal UserAuthDto authUser,
+            @PathVariable Long expenseId) {
+        Optional<ExpenseEntity> expense = expenseService.getExpenseById(authUser.getId(), expenseId);
+        if (expense.isPresent()) {
+            return new ResponseEntity<>(expense.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
     @GetMapping("/total")
-    public TotalExpenseAmountDto getTotalExpenseAmount() {
-        return expenseService.getTotalExpenseAmount();
+    public TotalExpenseAmountDto getTotalExpenseAmount(@AuthenticationPrincipal UserAuthDto authUser) {
+        return expenseService.getTotalExpenseAmount(authUser.getId());
     }
 
     @GetMapping("/total/group/{expenseGroupId}")
-    public TotalExpenseAmountDto getTotalExpenseAmount(Long expenseGroupId) {
-        return expenseService.getTotalExpenseAmount(expenseGroupId);
+    public TotalExpenseAmountDto getTotalExpenseAmount(@AuthenticationPrincipal UserAuthDto authUser,
+            @PathVariable Long expenseGroupId) {
+        return expenseService.getTotalExpenseAmount(authUser.getId(), expenseGroupId);
     }
 
     // last 5 expense changes
     @GetMapping("/last-5-changes")
-    public List<ExpenseEntity> getLast5ExpenseChanges() {
-        return expenseService.getLast5ExpenseChanges();
+    public List<ExpenseEntity> getLast5ExpenseChanges(@AuthenticationPrincipal UserAuthDto authUser) {
+        return expenseService.getLast5ExpenseChanges(authUser.getId());
+    }
+
+    // create an expense
+    @PostMapping
+    public ResponseEntity<?> createExpense(@RequestBody @Valid ExpenseDto expense,
+            @AuthenticationPrincipal UserAuthDto authUser) {
+        expenseService.createExpense(authUser.getId(), expense);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    // update an expense
+    @PutMapping("/{expenseId}")
+    public ResponseEntity<?> updateExpense(@RequestBody @Valid ExpenseDto expense,
+            @AuthenticationPrincipal UserAuthDto authUser, @PathVariable Long expenseId) {
+        expenseService.updateExpense(authUser.getId(), expenseId, expense);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+    // delete an expense
+    @DeleteMapping("/{expenseId}")
+    public ResponseEntity<?> deleteExpense(@AuthenticationPrincipal UserAuthDto authUser,
+            @PathVariable Long expenseId) {
+        expenseService.deleteExpense(authUser.getId(), expenseId);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+    // delete all expenses
+    @DeleteMapping
+    public ResponseEntity<?> deleteAllExpenses(@AuthenticationPrincipal UserAuthDto authUser) {
+        expenseService.deleteAllExpenses(authUser.getId());
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+    // delete expenses by group id
+    @DeleteMapping("/group/{expenseGroupId}")
+    public ResponseEntity<?> deleteExpensesByGroupId(@AuthenticationPrincipal UserAuthDto authUser,
+            @PathVariable Long expenseGroupId) {
+        expenseService.deleteAllExpensesByGroup(authUser.getId(), expenseGroupId);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+    // get expense groups
+    @GetMapping("/groups")
+    public List<ExpenseGroup> getExpenseGroups(@AuthenticationPrincipal UserAuthDto authUser) {
+        return expenseService.getAllExpenseGroups(authUser.getId());
+    }
+
+    // get expense group by id
+    @GetMapping("/groups/{expenseGroupId}")
+    public ExpenseGroup getExpenseGroupById(@AuthenticationPrincipal UserAuthDto authUser,
+            @PathVariable Long expenseGroupId) {
+        return expenseService.getExpenseGroup(authUser.getId(), expenseGroupId);
+    }
+
+    // create an expense group
+    @PostMapping("/groups")
+    @Transactional
+    public ResponseEntity<?> createExpenseGroup(@RequestBody @Valid ExpenseGroupDto expenseGroup,
+            @AuthenticationPrincipal UserAuthDto authUser) {
+        expenseService.createExpenseGroup(authUser.getId(), expenseGroup);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    // update an expense group
+    @PutMapping("/groups/{expenseGroupId}")
+    @Transactional
+    public ResponseEntity<?> updateExpenseGroup(@RequestBody @Valid ExpenseGroupDto expenseGroup,
+            @AuthenticationPrincipal UserAuthDto authUser, @PathVariable Long expenseGroupId) {
+        expenseService.updateExpenseGroup(authUser.getId(), expenseGroupId, expenseGroup);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+    // delete an expense group
+    @DeleteMapping("/groups/{expenseGroupId}")
+    @Transactional
+    public ResponseEntity<?> deleteExpenseGroup(@AuthenticationPrincipal UserAuthDto authUser,
+            @PathVariable Long expenseGroupId) {
+        expenseService.deleteExpenseGroup(authUser.getId(), expenseGroupId);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+    // delete all expense groups
+    @DeleteMapping("/groups")
+    @Transactional
+    public ResponseEntity<?> deleteAllExpenseGroups(@AuthenticationPrincipal UserAuthDto authUser) {
+        expenseService.deleteAllExpenseGroups(authUser.getId());
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 }

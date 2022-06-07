@@ -4,7 +4,7 @@ import javax.validation.Valid;
 
 import com.expensetracker.main.domain.user.dto.UserDto;
 import com.expensetracker.main.domain.user.dto.UserLoginDto;
-import com.expensetracker.main.domain.user.dto.UserRegistraionDto;
+import com.expensetracker.main.domain.user.dto.UserRegistrationDto;
 import com.expensetracker.main.domain.user.service.UserService;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +21,7 @@ public class AuthController {
     private final UserService userService;
 
     @PostMapping("/register")
-    public UserDto registration(@RequestBody @Valid UserRegistraionDto registration) {
+    public UserDto registration(@RequestBody @Valid UserRegistrationDto registration) {
         return userService.registration(registration);
     }
 

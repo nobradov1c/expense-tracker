@@ -16,7 +16,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Builder
 @JsonTypeName("user")
-public class UserRegistraionDto {
+public class UserRegistrationDto {
     @NotNull
     @Pattern(regexp = "[\\w\\d]{3,30}", message = "string contains alphabet or digit with length 3 to 30")
     private String name;
@@ -28,7 +28,4 @@ public class UserRegistraionDto {
     @NotBlank
     @Size(min = 8, max = 32)
     private String password;
-
-    @NotNull
-    private Long roleId;
 }

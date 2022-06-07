@@ -39,7 +39,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 // swagger
                 .antMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                .antMatchers("/auth/**").permitAll()
+                .antMatchers("/auth/**", "/").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))

@@ -18,12 +18,14 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MyUserDetails implements UserDetails {
+    private Long id;
     private String name;
     private String email;
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
 
     public MyUserDetails(UserEntity user) {
+        this.id = user.getId();
         this.name = user.getName();
         this.email = user.getEmail();
         this.password = user.getPassword();
