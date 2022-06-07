@@ -49,12 +49,10 @@ public class ExpenseServiceImpl implements ExpenseService {
     public TotalExpenseAmountDto getTotalExpenseAmount(Long userId) {
         BigDecimal totalAmount = new BigDecimal(0);
 
-        if (userId != null) {
-            List<ExpenseEntity> expenses = expenseRepository.findByUserId(userId);
+        List<ExpenseEntity> expenses = expenseRepository.findByUserId(userId);
 
-            for (ExpenseEntity expense : expenses) {
-                totalAmount = totalAmount.add(expense.getAmount());
-            }
+        for (ExpenseEntity expense : expenses) {
+            totalAmount = totalAmount.add(expense.getAmount());
         }
 
         TotalExpenseAmountDto totalExpenseAmountDto = new TotalExpenseAmountDto(totalAmount);
@@ -65,19 +63,17 @@ public class ExpenseServiceImpl implements ExpenseService {
     public TotalExpenseAmountDto getTotalExpenseAmount(Long userId, Long expenseGroupId) {
         BigDecimal totalAmount = new BigDecimal(0);
 
-        if (userId != null && expenseGroupId != null) {
-            ExpenseGroup expenseGroup = expenseGroupRepository.findById(expenseGroupId)
-                    .orElseThrow(() -> new AppException(MyErrorMessages.EXPENSE_GROUP_NOT_FOUND));
+        ExpenseGroup expenseGroup = expenseGroupRepository.findById(expenseGroupId)
+                .orElseThrow(() -> new AppException(MyErrorMessages.EXPENSE_GROUP_NOT_FOUND));
 
-            if (!expenseGroup.getUser().getId().equals(userId)) {
-                throw new AppException(MyErrorMessages.EXPENSE_GROUP_NOT_FOUND);
-            }
+        if (!expenseGroup.getUser().getId().equals(userId)) {
+            throw new AppException(MyErrorMessages.EXPENSE_GROUP_NOT_FOUND);
+        }
 
-            List<ExpenseEntity> expenses = expenseRepository.findByUserIdAndExpenseGroupId(userId, expenseGroupId);
+        List<ExpenseEntity> expenses = expenseRepository.findByUserIdAndExpenseGroupId(userId, expenseGroupId);
 
-            for (ExpenseEntity expense : expenses) {
-                totalAmount = totalAmount.add(expense.getAmount());
-            }
+        for (ExpenseEntity expense : expenses) {
+            totalAmount = totalAmount.add(expense.getAmount());
         }
 
         TotalExpenseAmountDto totalExpenseAmountDto = new TotalExpenseAmountDto(totalAmount, expenseGroupId);
@@ -103,13 +99,10 @@ public class ExpenseServiceImpl implements ExpenseService {
         expenseEntity.setDescription(expenseDto.getDescription());
 
         if (expenseDto.getExpenseGroupId() != null) {
-            Optional<ExpenseGroup> expenseGroup = expenseGroupRepository.findById(expenseDto.getExpenseGroupId());
+            ExpenseGroup expenseGroup = expenseGroupRepository.findById(expenseDto.getExpenseGroupId())
+                    .orElseThrow(() -> new AppException(MyErrorMessages.EXPENSE_GROUP_NOT_FOUND));
 
-            if (expenseGroup.isPresent()) {
-                expenseEntity.setExpenseGroup(expenseGroup.get());
-            } else {
-                throw (new AppException(MyErrorMessages.EXPENSE_GROUP_NOT_FOUND));
-            }
+            expenseEntity.setExpenseGroup(expenseGroup);
         }
 
         UserEntity user = userRepository.findById(userId).get();
@@ -125,49 +118,39 @@ public class ExpenseServiceImpl implements ExpenseService {
     @Override
     @Transactional
     public ExpenseEntity updateExpense(Long userId, Long expenseId, ExpenseDto expenseDto) {
-        Optional<ExpenseEntity> expenseEntity = expenseRepository.findById(expenseId);
+        ExpenseEntity expenseEntity = expenseRepository.findById(expenseId)
+                .orElseThrow(() -> new AppException(MyErrorMessages.EXPENSE_NOT_FOUND));
 
-        if (expenseEntity.isPresent()) {
-            ExpenseEntity expense = expenseEntity.get();
+        ExpenseEntity expense = expenseEntity;
 
-            if (expenseDto.getAmount() != null) {
-                expense.setAmount(expenseDto.getAmount());
-            }
-            if (expenseDto.getDescription() != null) {
-                expense.setDescription(expenseDto.getDescription());
-            }
-
-            if (expenseDto.getExpenseGroupId() != null) {
-                Optional<ExpenseGroup> expenseGroup = expenseGroupRepository.findById(expenseDto.getExpenseGroupId());
-
-                if (expenseGroup.isPresent()) {
-                    expense.setExpenseGroup(expenseGroup.get());
-                } else {
-
-                    throw (new AppException(MyErrorMessages.EXPENSE_GROUP_NOT_FOUND));
-                }
-            }
-
-            expense = expenseRepository.save(expense);
-            return expense;
-        } else {
-            throw (new AppException(MyErrorMessages.EXPENSE_NOT_FOUND));
+        if (expenseDto.getAmount() != null) {
+            expense.setAmount(expenseDto.getAmount());
         }
+        if (expenseDto.getDescription() != null) {
+            expense.setDescription(expenseDto.getDescription());
+        }
+
+        if (expenseDto.getExpenseGroupId() != null) {
+            ExpenseGroup expenseGroup = expenseGroupRepository.findById(expenseDto.getExpenseGroupId())
+                    .orElseThrow(() -> new AppException(MyErrorMessages.EXPENSE_GROUP_NOT_FOUND));
+
+            expense.setExpenseGroup(expenseGroup);
+        }
+
+        expense = expenseRepository.save(expense);
+        return expense;
     }
 
     @Override
     @Transactional
     public void deleteExpense(Long userId, Long expenseId) {
-        Optional<ExpenseEntity> expenseEntity = expenseRepository.findById(expenseId);
+        ExpenseEntity expenseEntity = expenseRepository.findById(expenseId)
+                .orElseThrow(() -> new AppException(MyErrorMessages.EXPENSE_NOT_FOUND));
 
-        if (expenseEntity.isPresent()) {
-            ExpenseEntity expense = expenseEntity.get();
+        ExpenseEntity expense = expenseEntity;
 
-            if (expense.getUser().getId().equals(userId)) {
-                expenseRepository.delete(expense);
-            } else {
-                throw (new AppException(MyErrorMessages.EXPENSE_NOT_FOUND));
-            }
+        if (expense.getUser().getId().equals(userId)) {
+            expenseRepository.delete(expense);
         } else {
             throw (new AppException(MyErrorMessages.EXPENSE_NOT_FOUND));
         }
@@ -189,11 +172,7 @@ public class ExpenseServiceImpl implements ExpenseService {
             throw (new AppException(MyErrorMessages.EXPENSE_GROUP_NOT_FOUND));
         }
 
-        List<ExpenseEntity> expenses = expenseRepository.findByUserIdAndExpenseGroupId(userId, expenseGroupId);
-
-        for (ExpenseEntity expense : expenses) {
-            expenseRepository.delete(expense);
-        }
+        expenseRepository.deleteByUserIdAndExpenseGroupId(userId, expenseGroupId);
     }
 
     @Override
