@@ -13,6 +13,7 @@ import com.expensetracker.main.domain.income.dto.TotalIncomeAmountDto;
 import com.expensetracker.main.domain.income.service.IncomeService;
 import com.expensetracker.main.domain.user.dto.UserAuthDto;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
@@ -39,11 +41,27 @@ public class IncomeController {
         return incomeService.getAllIncomes(authUser.getId());
     }
 
+    // get all incomes paging
+    @GetMapping("/paging")
+    public Page<IncomeResponseDto> getAllIncomes(@AuthenticationPrincipal UserAuthDto authUser,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size) {
+        return incomeService.getAllIncomes(authUser.getId(), page, size);
+    }
+
     // all by group
     @GetMapping("/all/{incomesGroupId}")
     public List<IncomeResponseDto> getAllIncomesByGroup(@AuthenticationPrincipal UserAuthDto authUser,
             @PathVariable Long incomesGroupId) {
         return incomeService.getAllIncomesByGroup(authUser.getId(), incomesGroupId);
+    }
+
+    // all by group paging
+    @GetMapping("/all/{incomesGroupId}/paging")
+    public Page<IncomeResponseDto> getAllIncomesByGroup(@AuthenticationPrincipal UserAuthDto authUser,
+            @PathVariable Long incomesGroupId, @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size) {
+        return incomeService.getAllIncomesByGroup(authUser.getId(), incomesGroupId, page, size);
     }
 
     // get by id
@@ -113,6 +131,14 @@ public class IncomeController {
     @GetMapping("/groups")
     public List<IncomeGroupResponseDto> getIncomesGroups(@AuthenticationPrincipal UserAuthDto authUser) {
         return incomeService.getAllIncomeGroups(authUser.getId());
+    }
+
+    // get income groups paging
+    @GetMapping("/groups/paging")
+    public Page<IncomeGroupResponseDto> getIncomesGroups(@AuthenticationPrincipal UserAuthDto authUser,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size) {
+        return incomeService.getAllIncomeGroups(authUser.getId(), page, size);
     }
 
     // get income group by id

@@ -2,6 +2,8 @@ package com.expensetracker.main.domain.income.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+
 import com.expensetracker.main.domain.income.dto.IncomeDto;
 import com.expensetracker.main.domain.income.dto.IncomeGroupDto;
 import com.expensetracker.main.domain.income.dto.IncomeGroupResponseDto;
@@ -14,8 +16,12 @@ public interface IncomeService {
     // get all incomes
     List<IncomeResponseDto> getAllIncomes(Long userId);
 
+    Page<IncomeResponseDto> getAllIncomes(Long userId, Integer page, Integer size);
+
     // all by group
     List<IncomeResponseDto> getAllIncomesByGroup(Long userId, Long incomeGroupId);
+
+    Page<IncomeResponseDto> getAllIncomesByGroup(Long userId, Long incomeGroupId, Integer page, Integer size);
 
     // getIncomeById
     IncomeResponseDto getIncomeById(Long userId, Long incomeId);
@@ -37,6 +43,8 @@ public interface IncomeService {
     void deleteAllIncomesByGroup(Long userId, Long incomeGroupId);
 
     List<IncomeGroupResponseDto> getAllIncomeGroups(Long userId);
+
+    Page<IncomeGroupResponseDto> getAllIncomeGroups(Long userId, Integer page, Integer size);
 
     IncomeGroupResponseDto getIncomeGroup(Long userId, Long incomeGroupId);
 
