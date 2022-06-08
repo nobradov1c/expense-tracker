@@ -1,16 +1,15 @@
 package com.expensetracker.main.domain.income.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import com.expensetracker.main.domain.income.dto.IncomeDto;
 import com.expensetracker.main.domain.income.dto.IncomeGroupDto;
+import com.expensetracker.main.domain.income.dto.IncomeGroupResponseDto;
+import com.expensetracker.main.domain.income.dto.IncomeResponseDto;
 import com.expensetracker.main.domain.income.dto.TotalIncomeAmountDto;
-import com.expensetracker.main.domain.income.entity.IncomeEntity;
-import com.expensetracker.main.domain.income.entity.IncomeGroup;
 import com.expensetracker.main.domain.income.service.IncomeService;
 import com.expensetracker.main.domain.user.dto.UserAuthDto;
 
@@ -36,27 +35,22 @@ public class IncomeController {
 
     // get all incomes
     @GetMapping
-    public List<IncomeEntity> getAllIncomes(@AuthenticationPrincipal UserAuthDto authUser) {
+    public List<IncomeResponseDto> getAllIncomes(@AuthenticationPrincipal UserAuthDto authUser) {
         return incomeService.getAllIncomes(authUser.getId());
     }
 
     // all by group
     @GetMapping("/all/{incomesGroupId}")
-    public List<IncomeEntity> getAllIncomesByGroup(@AuthenticationPrincipal UserAuthDto authUser,
+    public List<IncomeResponseDto> getAllIncomesByGroup(@AuthenticationPrincipal UserAuthDto authUser,
             @PathVariable Long incomesGroupId) {
         return incomeService.getAllIncomesByGroup(authUser.getId(), incomesGroupId);
     }
 
     // get by id
     @GetMapping("/{incomeId}")
-    public ResponseEntity<?> getIncomesById(@AuthenticationPrincipal UserAuthDto authUser,
+    public IncomeResponseDto getIncomesById(@AuthenticationPrincipal UserAuthDto authUser,
             @PathVariable Long incomeId) {
-        Optional<IncomeEntity> income = incomeService.getIncomeById(authUser.getId(), incomeId);
-        if (income.isPresent()) {
-            return new ResponseEntity<>(income.get(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return incomeService.getIncomeById(authUser.getId(), incomeId);
     }
 
     @GetMapping("/total")
@@ -72,7 +66,7 @@ public class IncomeController {
 
     // last 5 income changes
     @GetMapping("/last-5-changes")
-    public List<IncomeEntity> getLast5IncomesChanges(@AuthenticationPrincipal UserAuthDto authUser) {
+    public List<IncomeResponseDto> getLast5IncomesChanges(@AuthenticationPrincipal UserAuthDto authUser) {
         return incomeService.getLast5IncomeChanges(authUser.getId());
     }
 
@@ -117,13 +111,13 @@ public class IncomeController {
 
     // get income groups
     @GetMapping("/groups")
-    public List<IncomeGroup> getIncomesGroups(@AuthenticationPrincipal UserAuthDto authUser) {
+    public List<IncomeGroupResponseDto> getIncomesGroups(@AuthenticationPrincipal UserAuthDto authUser) {
         return incomeService.getAllIncomeGroups(authUser.getId());
     }
 
     // get income group by id
     @GetMapping("/groups/{incomesGroupId}")
-    public IncomeGroup getIncomesGroupById(@AuthenticationPrincipal UserAuthDto authUser,
+    public IncomeGroupResponseDto getIncomesGroupById(@AuthenticationPrincipal UserAuthDto authUser,
             @PathVariable Long incomesGroupId) {
         return incomeService.getIncomeGroup(authUser.getId(), incomesGroupId);
     }
