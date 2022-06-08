@@ -2,13 +2,15 @@ package com.expensetracker.main.domain.expense.service;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
 import com.expensetracker.main.domain.expense.dto.ExpenseDto;
 import com.expensetracker.main.domain.expense.dto.ExpenseGroupDto;
+import com.expensetracker.main.domain.expense.dto.ExpenseGroupResponseDto;
+import com.expensetracker.main.domain.expense.dto.ExpenseResponseDto;
 import com.expensetracker.main.domain.expense.dto.TotalExpenseAmountDto;
 import com.expensetracker.main.domain.expense.entity.ExpenseEntity;
 import com.expensetracker.main.domain.expense.entity.ExpenseGroup;
+import com.expensetracker.main.domain.expense.mapper.ExpenseMapper;
 import com.expensetracker.main.domain.expense.repository.ExpenseGroupRepository;
 import com.expensetracker.main.domain.expense.repository.ExpenseRepository;
 import com.expensetracker.main.domain.user.entity.UserEntity;
@@ -28,13 +30,16 @@ public class ExpenseServiceImpl implements ExpenseService {
     private final ExpenseGroupRepository expenseGroupRepository;
     private final UserRepository userRepository;
 
+    private final ExpenseMapper expenseMapper;
+
     @Override
-    public List<ExpenseEntity> getAllExpenses(Long userId) {
-        return expenseRepository.findByUserId(userId);
+    public List<ExpenseResponseDto> getAllExpenses(Long userId) {
+        List<ExpenseEntity> expenses = expenseRepository.findByUserId(userId);
+        return expenses.stream().map(expenseMapper::toExpenseResponseDto).toList();
     }
 
     @Override
-    public List<ExpenseEntity> getAllExpensesByGroup(Long userId, Long expenseGroupId) {
+    public List<ExpenseResponseDto> getAllExpensesByGroup(Long userId, Long expenseGroupId) {
         ExpenseGroup expenseGroup = expenseGroupRepository.findById(expenseGroupId)
                 .orElseThrow(() -> new AppException(MyErrorMessages.EXPENSE_GROUP_NOT_FOUND));
 
@@ -42,7 +47,8 @@ public class ExpenseServiceImpl implements ExpenseService {
             throw new AppException(MyErrorMessages.EXPENSE_GROUP_NOT_FOUND);
         }
 
-        return expenseRepository.findByExpenseGroupId(expenseGroupId);
+        List<ExpenseEntity> expenses = expenseRepository.findByExpenseGroupId(expenseGroupId);
+        return expenses.stream().map(expenseMapper::toExpenseResponseDto).toList();
     }
 
     @Override
@@ -82,13 +88,16 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     @Override
-    public List<ExpenseEntity> getLast5ExpenseChanges(Long userId) {
-        return expenseRepository.findFirst5ByUserIdOrderByUpdatedAtDesc(userId);
+    public List<ExpenseResponseDto> getLast5ExpenseChanges(Long userId) {
+        List<ExpenseEntity> expenses = expenseRepository.findFirst5ByUserIdOrderByUpdatedAtDesc(userId);
+        return expenses.stream().map(expenseMapper::toExpenseResponseDto).toList();
     }
 
     @Override
-    public Optional<ExpenseEntity> getExpenseById(Long userId, Long expenseId) {
-        return expenseRepository.findByIdAndUserId(expenseId, userId);
+    public ExpenseResponseDto getExpenseById(Long userId, Long expenseId) {
+        ExpenseEntity expense = expenseRepository.findByIdAndUserId(expenseId, userId)
+                .orElseThrow(() -> new AppException(MyErrorMessages.EXPENSE_NOT_FOUND));
+        return expenseMapper.toExpenseResponseDto(expense);
     }
 
     @Override
@@ -176,14 +185,16 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     @Override
-    public List<ExpenseGroup> getAllExpenseGroups(Long userId) {
-        return expenseGroupRepository.findByUserId(userId);
+    public List<ExpenseGroupResponseDto> getAllExpenseGroups(Long userId) {
+        List<ExpenseGroup> expenseGroups = expenseGroupRepository.findByUserId(userId);
+        return expenseGroups.stream().map(expenseMapper::toExpenseGroupResponseDto).toList();
     }
 
     @Override
-    public ExpenseGroup getExpenseGroup(Long userId, Long expenseGroupId) {
-        return expenseGroupRepository.findByIdAndUserId(expenseGroupId, userId)
+    public ExpenseGroupResponseDto getExpenseGroup(Long userId, Long expenseGroupId) {
+        ExpenseGroup expenseGroup = expenseGroupRepository.findById(expenseGroupId)
                 .orElseThrow(() -> new AppException(MyErrorMessages.EXPENSE_GROUP_NOT_FOUND));
+        return expenseMapper.toExpenseGroupResponseDto(expenseGroup);
     }
 
     @Override

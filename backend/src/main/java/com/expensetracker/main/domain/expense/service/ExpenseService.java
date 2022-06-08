@@ -1,29 +1,30 @@
 package com.expensetracker.main.domain.expense.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.expensetracker.main.domain.expense.dto.ExpenseDto;
 import com.expensetracker.main.domain.expense.dto.ExpenseGroupDto;
+import com.expensetracker.main.domain.expense.dto.ExpenseGroupResponseDto;
+import com.expensetracker.main.domain.expense.dto.ExpenseResponseDto;
 import com.expensetracker.main.domain.expense.dto.TotalExpenseAmountDto;
 import com.expensetracker.main.domain.expense.entity.ExpenseEntity;
 import com.expensetracker.main.domain.expense.entity.ExpenseGroup;
 
 public interface ExpenseService {
     // get all expenses
-    List<ExpenseEntity> getAllExpenses(Long userId);
+    List<ExpenseResponseDto> getAllExpenses(Long userId);
 
     // all by group
-    List<ExpenseEntity> getAllExpensesByGroup(Long userId, Long expenseGroupId);
+    List<ExpenseResponseDto> getAllExpensesByGroup(Long userId, Long expenseGroupId);
 
     // getExpenseById
-    Optional<ExpenseEntity> getExpenseById(Long userId, Long expenseId);
+    ExpenseResponseDto getExpenseById(Long userId, Long expenseId);
 
     TotalExpenseAmountDto getTotalExpenseAmount(Long userId);
 
     TotalExpenseAmountDto getTotalExpenseAmount(Long userId, Long expenseGroupId);
 
-    List<ExpenseEntity> getLast5ExpenseChanges(Long userId);
+    List<ExpenseResponseDto> getLast5ExpenseChanges(Long userId);
 
     ExpenseEntity createExpense(Long userId, ExpenseDto expenseDto);
 
@@ -35,9 +36,9 @@ public interface ExpenseService {
 
     void deleteAllExpensesByGroup(Long userId, Long expenseGroupId);
 
-    List<ExpenseGroup> getAllExpenseGroups(Long userId);
+    List<ExpenseGroupResponseDto> getAllExpenseGroups(Long userId);
 
-    ExpenseGroup getExpenseGroup(Long userId, Long expenseGroupId);
+    ExpenseGroupResponseDto getExpenseGroup(Long userId, Long expenseGroupId);
 
     ExpenseGroup createExpenseGroup(Long userId, ExpenseGroupDto expenseGroupDto);
 
