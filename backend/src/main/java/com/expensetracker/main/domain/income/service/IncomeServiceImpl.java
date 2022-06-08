@@ -2,13 +2,15 @@ package com.expensetracker.main.domain.income.service;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
 import com.expensetracker.main.domain.income.dto.IncomeDto;
 import com.expensetracker.main.domain.income.dto.IncomeGroupDto;
+import com.expensetracker.main.domain.income.dto.IncomeGroupResponseDto;
+import com.expensetracker.main.domain.income.dto.IncomeResponseDto;
 import com.expensetracker.main.domain.income.dto.TotalIncomeAmountDto;
 import com.expensetracker.main.domain.income.entity.IncomeEntity;
 import com.expensetracker.main.domain.income.entity.IncomeGroup;
+import com.expensetracker.main.domain.income.mapper.IncomeMapper;
 import com.expensetracker.main.domain.income.repository.IncomeGroupRepository;
 import com.expensetracker.main.domain.income.repository.IncomeRepository;
 import com.expensetracker.main.domain.user.entity.UserEntity;
@@ -28,13 +30,15 @@ public class IncomeServiceImpl implements IncomeService {
     private final IncomeGroupRepository incomeGroupRepository;
     private final UserRepository userRepository;
 
+    private final IncomeMapper incomeMapper;
+
     @Override
-    public List<IncomeEntity> getAllIncomes(Long userId) {
-        return incomeRepository.findByUserId(userId);
+    public List<IncomeResponseDto> getAllIncomes(Long userId) {
+        return incomeRepository.findByUserId(userId).stream().map(incomeMapper::toIncomeResponseDto).toList();
     }
 
     @Override
-    public List<IncomeEntity> getAllIncomesByGroup(Long userId, Long incomeGroupId) {
+    public List<IncomeResponseDto> getAllIncomesByGroup(Long userId, Long incomeGroupId) {
         IncomeGroup incomeGroup = incomeGroupRepository.findById(incomeGroupId)
                 .orElseThrow(() -> new AppException(MyErrorMessages.INCOME_GROUP_NOT_FOUND));
 
@@ -42,7 +46,8 @@ public class IncomeServiceImpl implements IncomeService {
             throw new AppException(MyErrorMessages.INCOME_GROUP_NOT_FOUND);
         }
 
-        return incomeRepository.findByIncomeGroupId(incomeGroupId);
+        return incomeRepository.findByIncomeGroupId(incomeGroupId).stream()
+                .map(incomeMapper::toIncomeResponseDto).toList();
     }
 
     @Override
@@ -82,13 +87,15 @@ public class IncomeServiceImpl implements IncomeService {
     }
 
     @Override
-    public List<IncomeEntity> getLast5IncomeChanges(Long userId) {
-        return incomeRepository.findFirst5ByUserIdOrderByUpdatedAtDesc(userId);
+    public List<IncomeResponseDto> getLast5IncomeChanges(Long userId) {
+        return incomeRepository.findFirst5ByUserIdOrderByUpdatedAtDesc(userId).stream()
+                .map(incomeMapper::toIncomeResponseDto).toList();
     }
 
     @Override
-    public Optional<IncomeEntity> getIncomeById(Long userId, Long incomeId) {
-        return incomeRepository.findByIdAndUserId(incomeId, userId);
+    public IncomeResponseDto getIncomeById(Long userId, Long incomeId) {
+        return incomeRepository.findByIdAndUserId(incomeId, userId).map(incomeMapper::toIncomeResponseDto)
+                .orElseThrow(() -> new AppException(MyErrorMessages.INCOME_NOT_FOUND));
     }
 
     @Override
@@ -173,13 +180,16 @@ public class IncomeServiceImpl implements IncomeService {
     }
 
     @Override
-    public List<IncomeGroup> getAllIncomeGroups(Long userId) {
-        return incomeGroupRepository.findByUserId(userId);
+    public List<IncomeGroupResponseDto> getAllIncomeGroups(Long userId) {
+        return incomeGroupRepository.findByUserId(userId).stream()
+                .map(incomeMapper::toIncomeGroupResponseDto).toList();
     }
 
     @Override
-    public IncomeGroup getIncomeGroup(Long userId, Long incomeGroupId) {
-        return incomeGroupRepository.findByIdAndUserId(incomeGroupId, userId)
+    public IncomeGroupResponseDto getIncomeGroup(Long userId, Long incomeGroupId) {
+        // return incomeGroupRepository.findByIdAndUserId(incomeGroupId, userId)
+        // .orElseThrow(() -> new AppException(MyErrorMessages.INCOME_GROUP_NOT_FOUND));
+        return incomeGroupRepository.findById(incomeGroupId).map(incomeMapper::toIncomeGroupResponseDto)
                 .orElseThrow(() -> new AppException(MyErrorMessages.INCOME_GROUP_NOT_FOUND));
     }
 
