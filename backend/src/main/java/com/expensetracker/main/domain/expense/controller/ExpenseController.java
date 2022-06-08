@@ -12,6 +12,7 @@ import com.expensetracker.main.domain.expense.dto.TotalExpenseAmountDto;
 import com.expensetracker.main.domain.expense.service.ExpenseService;
 import com.expensetracker.main.domain.user.dto.UserAuthDto;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -36,27 +37,30 @@ public class ExpenseController {
 
     // get all expenses
     @GetMapping
-    public List<ExpenseResponseDto> getAllExpenses(@AuthenticationPrincipal UserAuthDto authUser,
-            @RequestParam(required = false, name = "page") Integer page,
-            @RequestParam(required = false, name = "size") Integer size) {
-        if (page != null && size != null) {
-            return expenseService.getAllExpenses(authUser.getId(), page, size);
-        } else {
-            return expenseService.getAllExpenses(authUser.getId());
-        }
+    public List<ExpenseResponseDto> getAllExpenses(@AuthenticationPrincipal UserAuthDto authUser) {
+        return expenseService.getAllExpenses(authUser.getId());
+    }
+
+    @GetMapping("/paging")
+    public Page<ExpenseResponseDto> getAllExpensesPaging(@AuthenticationPrincipal UserAuthDto authUser,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size) {
+        return expenseService.getAllExpenses(authUser.getId(), page, size);
     }
 
     // all by group
     @GetMapping("/all/{expenseGroupId}")
     public List<ExpenseResponseDto> getAllExpensesByGroup(@AuthenticationPrincipal UserAuthDto authUser,
+            @PathVariable Long expenseGroupId) {
+        return expenseService.getAllExpensesByGroup(authUser.getId(), expenseGroupId);
+    }
+
+    @GetMapping("/all/{expenseGroupId}/paging")
+    public Page<ExpenseResponseDto> getAllExpensesByGroupPaging(@AuthenticationPrincipal UserAuthDto authUser,
             @PathVariable Long expenseGroupId,
-            @RequestParam(required = false, name = "page") Integer page,
-            @RequestParam(required = false, name = "size") Integer size) {
-        if (page != null && size != null) {
-            return expenseService.getAllExpensesByGroup(authUser.getId(), expenseGroupId, page, size);
-        } else {
-            return expenseService.getAllExpensesByGroup(authUser.getId(), expenseGroupId);
-        }
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size) {
+        return expenseService.getAllExpensesByGroup(authUser.getId(), expenseGroupId, page, size);
     }
 
     // get by id
@@ -124,14 +128,16 @@ public class ExpenseController {
 
     // get expense groups
     @GetMapping("/groups")
-    public List<ExpenseGroupResponseDto> getExpenseGroups(@AuthenticationPrincipal UserAuthDto authUser,
-            @RequestParam(required = false, name = "page") Integer page,
-            @RequestParam(required = false, name = "size") Integer size) {
-        if (page != null && size != null) {
-            return expenseService.getAllExpenseGroups(authUser.getId(), page, size);
-        } else {
-            return expenseService.getAllExpenseGroups(authUser.getId());
-        }
+    public List<ExpenseGroupResponseDto> getExpenseGroups(@AuthenticationPrincipal UserAuthDto authUser) {
+        return expenseService.getAllExpenseGroups(authUser.getId());
+    }
+
+    // get expense groups paging
+    @GetMapping("/groups/paging")
+    public Page<ExpenseGroupResponseDto> getExpenseGroupsPaging(@AuthenticationPrincipal UserAuthDto authUser,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size) {
+        return expenseService.getAllExpenseGroups(authUser.getId(), page, size);
     }
 
     // get expense group by id

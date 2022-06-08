@@ -18,6 +18,7 @@ import com.expensetracker.main.domain.user.repository.UserRepository;
 import com.expensetracker.main.exception.AppException;
 import com.expensetracker.main.exception.MyErrorMessages;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,9 +41,9 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     @Override
-    public List<ExpenseResponseDto> getAllExpenses(Long userId, Integer page, Integer size) {
-        return expenseRepository.findByUserId(userId, PageRequest.of(page, size)).stream()
-                .map(expenseMapper::toExpenseResponseDto).toList();
+    public Page<ExpenseResponseDto> getAllExpenses(Long userId, Integer page, Integer size) {
+        return expenseRepository.findByUserId(userId, PageRequest.of(page, size))
+                .map(expenseMapper::toExpenseResponseDto);
     }
 
     @Override
@@ -59,7 +60,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     @Override
-    public List<ExpenseResponseDto> getAllExpensesByGroup(Long userId, Long expenseGroupId, Integer page,
+    public Page<ExpenseResponseDto> getAllExpensesByGroup(Long userId, Long expenseGroupId, Integer page,
             Integer size) {
         ExpenseGroup expenseGroup = expenseGroupRepository.findById(expenseGroupId)
                 .orElseThrow(() -> new AppException(MyErrorMessages.EXPENSE_GROUP_NOT_FOUND));
@@ -68,8 +69,8 @@ public class ExpenseServiceImpl implements ExpenseService {
             throw new AppException(MyErrorMessages.EXPENSE_GROUP_NOT_FOUND);
         }
 
-        return expenseRepository.findByExpenseGroupId(expenseGroupId, PageRequest.of(page, size)).stream()
-                .map(expenseMapper::toExpenseResponseDto).toList();
+        return expenseRepository.findByExpenseGroupId(expenseGroupId, PageRequest.of(page, size))
+                .map(expenseMapper::toExpenseResponseDto);
     }
 
     @Override
@@ -217,9 +218,9 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     @Override
-    public List<ExpenseGroupResponseDto> getAllExpenseGroups(Long userId, Integer page, Integer size) {
-        return expenseGroupRepository.findByUserId(userId, PageRequest.of(page, size)).stream()
-                .map(expenseMapper::toExpenseGroupResponseDto).toList();
+    public Page<ExpenseGroupResponseDto> getAllExpenseGroups(Long userId, Integer page, Integer size) {
+        return expenseGroupRepository.findByUserId(userId, PageRequest.of(page, size))
+                .map(expenseMapper::toExpenseGroupResponseDto);
     }
 
     @Override
