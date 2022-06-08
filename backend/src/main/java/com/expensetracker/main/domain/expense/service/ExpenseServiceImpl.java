@@ -34,8 +34,8 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     @Override
     public List<ExpenseResponseDto> getAllExpenses(Long userId) {
-        List<ExpenseEntity> expenses = expenseRepository.findByUserId(userId);
-        return expenses.stream().map(expenseMapper::toExpenseResponseDto).toList();
+        return expenseRepository.findByUserId(userId).stream()
+                .map(expenseMapper::toExpenseResponseDto).toList();
     }
 
     @Override
@@ -47,8 +47,8 @@ public class ExpenseServiceImpl implements ExpenseService {
             throw new AppException(MyErrorMessages.EXPENSE_GROUP_NOT_FOUND);
         }
 
-        List<ExpenseEntity> expenses = expenseRepository.findByExpenseGroupId(expenseGroupId);
-        return expenses.stream().map(expenseMapper::toExpenseResponseDto).toList();
+        return expenseRepository.findByExpenseGroupId(expenseGroupId).stream()
+                .map(expenseMapper::toExpenseResponseDto).toList();
     }
 
     @Override
@@ -89,15 +89,15 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     @Override
     public List<ExpenseResponseDto> getLast5ExpenseChanges(Long userId) {
-        List<ExpenseEntity> expenses = expenseRepository.findFirst5ByUserIdOrderByUpdatedAtDesc(userId);
-        return expenses.stream().map(expenseMapper::toExpenseResponseDto).toList();
+        return expenseRepository.findFirst5ByUserIdOrderByUpdatedAtDesc(userId).stream()
+                .map(expenseMapper::toExpenseResponseDto).toList();
     }
 
     @Override
     public ExpenseResponseDto getExpenseById(Long userId, Long expenseId) {
-        ExpenseEntity expense = expenseRepository.findByIdAndUserId(expenseId, userId)
+        return expenseRepository.findByIdAndUserId(expenseId, userId)
+                .map(expenseMapper::toExpenseResponseDto)
                 .orElseThrow(() -> new AppException(MyErrorMessages.EXPENSE_NOT_FOUND));
-        return expenseMapper.toExpenseResponseDto(expense);
     }
 
     @Override
@@ -191,8 +191,8 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     @Override
     public List<ExpenseGroupResponseDto> getAllExpenseGroups(Long userId) {
-        List<ExpenseGroup> expenseGroups = expenseGroupRepository.findByUserId(userId);
-        return expenseGroups.stream().map(expenseMapper::toExpenseGroupResponseDto).toList();
+        return expenseGroupRepository.findByUserId(userId).stream()
+                .map(expenseMapper::toExpenseGroupResponseDto).toList();
     }
 
     @Override
