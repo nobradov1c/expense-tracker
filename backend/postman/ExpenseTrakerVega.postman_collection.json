@@ -161,6 +161,35 @@
 					"response": []
 				},
 				{
+					"name": "all paging",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/expenses/paging?page=2&size=3",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"expenses",
+								"paging"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "2"
+								},
+								{
+									"key": "size",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "all by group",
 					"request": {
 						"method": "GET",
@@ -181,19 +210,50 @@
 					"response": []
 				},
 				{
-					"name": "by ID",
+					"name": "all by group paging",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{url}}/api/expenses/1",
+							"raw": "{{url}}/api/expenses/all/1/paging?page=1&size=3",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"api",
 								"expenses",
-								"1"
+								"all",
+								"1",
+								"paging"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "size",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/expenses/29",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"expenses",
+								"29"
 							]
 						}
 					},
@@ -265,7 +325,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"description\": \"voda\",\r\n    \"amount\": 400,\r\n    \"expenseGroupId\": 9\r\n}",
+							"raw": "{\r\n    \"description\": \"struja\",\r\n    \"amount\": 400,\r\n    \"expenseGroupId\": 1\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -422,12 +482,12 @@
 					"response": []
 				},
 				{
-					"name": "by ID",
+					"name": "all paging",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{url}}/api/expenses/groups/8",
+							"raw": "{{url}}/api/expenses/groups/paging?page=1&size=2",
 							"host": [
 								"{{url}}"
 							],
@@ -435,7 +495,37 @@
 								"api",
 								"expenses",
 								"groups",
-								"8"
+								"paging"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "size",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/expenses/groups/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"expenses",
+								"groups",
+								"1"
 							]
 						}
 					},
@@ -561,12 +651,59 @@
 					"response": []
 				},
 				{
+					"name": "all paging",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/incomes/paging?page=1&size=2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"incomes",
+								"paging"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "size",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "all Copy",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/incomes",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"incomes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "all by group",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{url}}/api/incomes/all/5",
+							"raw": "{{url}}/api/incomes/all/1",
 							"host": [
 								"{{url}}"
 							],
@@ -574,7 +711,38 @@
 								"api",
 								"incomes",
 								"all",
-								"5"
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "all by group paging",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/incomes/all/1/paging?page=2&size=4",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"incomes",
+								"all",
+								"1",
+								"paging"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "2"
+								},
+								{
+									"key": "size",
+									"value": "4"
+								}
 							]
 						}
 					},
@@ -586,14 +754,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{url}}/api/incomes/1",
+							"raw": "{{url}}/api/incomes/4",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"api",
 								"incomes",
-								"1"
+								"4"
 							]
 						}
 					},
@@ -665,7 +833,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"description\": \"plata\",\r\n    \"amount\": 4000,\r\n    \"incomeGroupId\": 5\r\n}",
+							"raw": "{\r\n    \"description\": \"plata\",\r\n    \"amount\": 4000,\r\n    \"incomeGroupId\": 1\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -822,12 +990,12 @@
 					"response": []
 				},
 				{
-					"name": "by ID",
+					"name": "all paging",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{url}}/api/incomes/groups/8",
+							"raw": "{{url}}/api/incomes/groups/paging?page=1&size=2",
 							"host": [
 								"{{url}}"
 							],
@@ -835,7 +1003,37 @@
 								"api",
 								"incomes",
 								"groups",
-								"8"
+								"paging"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "size",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/incomes/groups/5",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"incomes",
+								"groups",
+								"5"
 							]
 						}
 					},
