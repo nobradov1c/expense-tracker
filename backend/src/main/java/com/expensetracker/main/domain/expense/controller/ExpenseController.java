@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
@@ -35,15 +36,27 @@ public class ExpenseController {
 
     // get all expenses
     @GetMapping
-    public List<ExpenseResponseDto> getAllExpenses(@AuthenticationPrincipal UserAuthDto authUser) {
-        return expenseService.getAllExpenses(authUser.getId());
+    public List<ExpenseResponseDto> getAllExpenses(@AuthenticationPrincipal UserAuthDto authUser,
+            @RequestParam(required = false, name = "page") Integer page,
+            @RequestParam(required = false, name = "size") Integer size) {
+        if (page != null && size != null) {
+            return expenseService.getAllExpenses(authUser.getId(), page, size);
+        } else {
+            return expenseService.getAllExpenses(authUser.getId());
+        }
     }
 
     // all by group
     @GetMapping("/all/{expenseGroupId}")
     public List<ExpenseResponseDto> getAllExpensesByGroup(@AuthenticationPrincipal UserAuthDto authUser,
-            @PathVariable Long expenseGroupId) {
-        return expenseService.getAllExpensesByGroup(authUser.getId(), expenseGroupId);
+            @PathVariable Long expenseGroupId,
+            @RequestParam(required = false, name = "page") Integer page,
+            @RequestParam(required = false, name = "size") Integer size) {
+        if (page != null && size != null) {
+            return expenseService.getAllExpensesByGroup(authUser.getId(), expenseGroupId, page, size);
+        } else {
+            return expenseService.getAllExpensesByGroup(authUser.getId(), expenseGroupId);
+        }
     }
 
     // get by id
@@ -111,8 +124,14 @@ public class ExpenseController {
 
     // get expense groups
     @GetMapping("/groups")
-    public List<ExpenseGroupResponseDto> getExpenseGroups(@AuthenticationPrincipal UserAuthDto authUser) {
-        return expenseService.getAllExpenseGroups(authUser.getId());
+    public List<ExpenseGroupResponseDto> getExpenseGroups(@AuthenticationPrincipal UserAuthDto authUser,
+            @RequestParam(required = false, name = "page") Integer page,
+            @RequestParam(required = false, name = "size") Integer size) {
+        if (page != null && size != null) {
+            return expenseService.getAllExpenseGroups(authUser.getId(), page, size);
+        } else {
+            return expenseService.getAllExpenseGroups(authUser.getId());
+        }
     }
 
     // get expense group by id

@@ -14,8 +14,13 @@ public interface ExpenseService {
     // get all expenses
     List<ExpenseResponseDto> getAllExpenses(Long userId);
 
+    // paging
+    List<ExpenseResponseDto> getAllExpenses(Long userId, Integer page, Integer size);
+
     // all by group
     List<ExpenseResponseDto> getAllExpensesByGroup(Long userId, Long expenseGroupId);
+
+    List<ExpenseResponseDto> getAllExpensesByGroup(Long userId, Long expenseGroupId, Integer page, Integer size);
 
     // getExpenseById
     ExpenseResponseDto getExpenseById(Long userId, Long expenseId);
@@ -37,6 +42,8 @@ public interface ExpenseService {
     void deleteAllExpensesByGroup(Long userId, Long expenseGroupId);
 
     List<ExpenseGroupResponseDto> getAllExpenseGroups(Long userId);
+
+    List<ExpenseGroupResponseDto> getAllExpenseGroups(Long userId, Integer page, Integer size);
 
     ExpenseGroupResponseDto getExpenseGroup(Long userId, Long expenseGroupId);
 

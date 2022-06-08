@@ -5,13 +5,20 @@ import java.util.Optional;
 
 import com.expensetracker.main.domain.expense.entity.ExpenseEntity;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ExpenseRepository extends JpaRepository<ExpenseEntity, Long> {
     List<ExpenseEntity> findByExpenseGroupId(Long expenseGroupId);
 
+    Page<ExpenseEntity> findByExpenseGroupId(Long expenseGroupId, Pageable pageable);
+
     // find by user_id
     List<ExpenseEntity> findByUserId(Long userId);
+
+    // paging
+    Page<ExpenseEntity> findByUserId(Long userId, Pageable pageable);
 
     // findByIdAndUserId
     Optional<ExpenseEntity> findByIdAndUserId(Long expenseId, Long userId);
