@@ -111,6 +111,11 @@ public class ExpenseServiceImpl implements ExpenseService {
             ExpenseGroup expenseGroup = expenseGroupRepository.findById(expenseDto.getExpenseGroupId())
                     .orElseThrow(() -> new AppException(MyErrorMessages.EXPENSE_GROUP_NOT_FOUND));
 
+            // check if user is owner of the expense group
+            if (!expenseGroup.getUser().getId().equals(userId)) {
+                throw new AppException(MyErrorMessages.EXPENSE_GROUP_NOT_FOUND);
+            }
+
             expenseEntity.setExpenseGroup(expenseGroup);
         }
 
@@ -194,6 +199,12 @@ public class ExpenseServiceImpl implements ExpenseService {
     public ExpenseGroupResponseDto getExpenseGroup(Long userId, Long expenseGroupId) {
         ExpenseGroup expenseGroup = expenseGroupRepository.findById(expenseGroupId)
                 .orElseThrow(() -> new AppException(MyErrorMessages.EXPENSE_GROUP_NOT_FOUND));
+
+        // check if user is owner of the expense group
+        if (!expenseGroup.getUser().getId().equals(userId)) {
+            throw new AppException(MyErrorMessages.EXPENSE_GROUP_NOT_FOUND);
+        }
+
         return expenseMapper.toExpenseGroupResponseDto(expenseGroup);
     }
 

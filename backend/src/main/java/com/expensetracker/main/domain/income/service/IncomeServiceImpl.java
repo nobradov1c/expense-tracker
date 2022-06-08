@@ -109,6 +109,11 @@ public class IncomeServiceImpl implements IncomeService {
             IncomeGroup incomeGroup = incomeGroupRepository.findById(incomeDto.getIncomeGroupId())
                     .orElseThrow(() -> new AppException(MyErrorMessages.INCOME_GROUP_NOT_FOUND));
 
+            // check if user is owner of the expense group
+            if (!incomeGroup.getUser().getId().equals(userId)) {
+                throw new AppException(MyErrorMessages.INCOME_GROUP_NOT_FOUND);
+            }
+
             incomeEntity.setIncomeGroup(incomeGroup);
         }
 
@@ -187,10 +192,15 @@ public class IncomeServiceImpl implements IncomeService {
 
     @Override
     public IncomeGroupResponseDto getIncomeGroup(Long userId, Long incomeGroupId) {
-        // return incomeGroupRepository.findByIdAndUserId(incomeGroupId, userId)
-        // .orElseThrow(() -> new AppException(MyErrorMessages.INCOME_GROUP_NOT_FOUND));
-        return incomeGroupRepository.findById(incomeGroupId).map(incomeMapper::toIncomeGroupResponseDto)
+        IncomeGroup incomeGroup = incomeGroupRepository.findById(incomeGroupId)
                 .orElseThrow(() -> new AppException(MyErrorMessages.INCOME_GROUP_NOT_FOUND));
+
+        // check if user is owner of the expense group
+        if (!incomeGroup.getUser().getId().equals(userId)) {
+            throw new AppException(MyErrorMessages.EXPENSE_GROUP_NOT_FOUND);
+        }
+
+        return incomeMapper.toIncomeGroupResponseDto(incomeGroup);
     }
 
     @Override
