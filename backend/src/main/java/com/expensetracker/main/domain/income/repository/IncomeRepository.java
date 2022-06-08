@@ -5,13 +5,20 @@ import java.util.Optional;
 
 import com.expensetracker.main.domain.income.entity.IncomeEntity;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface IncomeRepository extends JpaRepository<IncomeEntity, Long> {
     List<IncomeEntity> findByIncomeGroupId(Long incomeGroupId);
 
+    Page<IncomeEntity> findByIncomeGroupId(Long incomeGroupId, Pageable pageable);
+
     // find by user_id
     List<IncomeEntity> findByUserId(Long userId);
+
+    // find by user_id and page and size
+    Page<IncomeEntity> findByUserId(Long userId, Pageable pageable);
 
     // findByIdAndUserId
     Optional<IncomeEntity> findByIdAndUserId(Long incomeId, Long userId);

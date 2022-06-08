@@ -18,6 +18,8 @@ import com.expensetracker.main.domain.user.repository.UserRepository;
 import com.expensetracker.main.exception.AppException;
 import com.expensetracker.main.exception.MyErrorMessages;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +40,11 @@ public class IncomeServiceImpl implements IncomeService {
     }
 
     @Override
+    public Page<IncomeResponseDto> getAllIncomes(Long userId, Integer page, Integer size) {
+        return incomeRepository.findByUserId(userId, PageRequest.of(page, size)).map(incomeMapper::toIncomeResponseDto);
+    }
+
+    @Override
     public List<IncomeResponseDto> getAllIncomesByGroup(Long userId, Long incomeGroupId) {
         IncomeGroup incomeGroup = incomeGroupRepository.findById(incomeGroupId)
                 .orElseThrow(() -> new AppException(MyErrorMessages.INCOME_GROUP_NOT_FOUND));
@@ -48,6 +55,19 @@ public class IncomeServiceImpl implements IncomeService {
 
         return incomeRepository.findByIncomeGroupId(incomeGroupId).stream()
                 .map(incomeMapper::toIncomeResponseDto).toList();
+    }
+
+    @Override
+    public Page<IncomeResponseDto> getAllIncomesByGroup(Long userId, Long incomeGroupId, Integer page, Integer size) {
+        IncomeGroup incomeGroup = incomeGroupRepository.findById(incomeGroupId)
+                .orElseThrow(() -> new AppException(MyErrorMessages.INCOME_GROUP_NOT_FOUND));
+
+        if (!incomeGroup.getUser().getId().equals(userId)) {
+            throw new AppException(MyErrorMessages.INCOME_GROUP_NOT_FOUND);
+        }
+
+        return incomeRepository.findByIncomeGroupId(incomeGroupId,
+                PageRequest.of(page, size)).map(incomeMapper::toIncomeResponseDto);
     }
 
     @Override
@@ -188,6 +208,12 @@ public class IncomeServiceImpl implements IncomeService {
     public List<IncomeGroupResponseDto> getAllIncomeGroups(Long userId) {
         return incomeGroupRepository.findByUserId(userId).stream()
                 .map(incomeMapper::toIncomeGroupResponseDto).toList();
+    }
+
+    @Override
+    public Page<IncomeGroupResponseDto> getAllIncomeGroups(Long userId, Integer page, Integer size) {
+        return incomeGroupRepository.findByUserId(userId, PageRequest.of(page, size))
+                .map(incomeMapper::toIncomeGroupResponseDto);
     }
 
     @Override
