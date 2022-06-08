@@ -18,6 +18,7 @@ import com.expensetracker.main.domain.user.repository.UserRepository;
 import com.expensetracker.main.exception.AppException;
 import com.expensetracker.main.exception.MyErrorMessages;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,6 +40,12 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     @Override
+    public List<ExpenseResponseDto> getAllExpenses(Long userId, Integer page, Integer size) {
+        return expenseRepository.findByUserId(userId, PageRequest.of(page, size)).stream()
+                .map(expenseMapper::toExpenseResponseDto).toList();
+    }
+
+    @Override
     public List<ExpenseResponseDto> getAllExpensesByGroup(Long userId, Long expenseGroupId) {
         ExpenseGroup expenseGroup = expenseGroupRepository.findById(expenseGroupId)
                 .orElseThrow(() -> new AppException(MyErrorMessages.EXPENSE_GROUP_NOT_FOUND));
@@ -48,6 +55,20 @@ public class ExpenseServiceImpl implements ExpenseService {
         }
 
         return expenseRepository.findByExpenseGroupId(expenseGroupId).stream()
+                .map(expenseMapper::toExpenseResponseDto).toList();
+    }
+
+    @Override
+    public List<ExpenseResponseDto> getAllExpensesByGroup(Long userId, Long expenseGroupId, Integer page,
+            Integer size) {
+        ExpenseGroup expenseGroup = expenseGroupRepository.findById(expenseGroupId)
+                .orElseThrow(() -> new AppException(MyErrorMessages.EXPENSE_GROUP_NOT_FOUND));
+
+        if (!expenseGroup.getUser().getId().equals(userId)) {
+            throw new AppException(MyErrorMessages.EXPENSE_GROUP_NOT_FOUND);
+        }
+
+        return expenseRepository.findByExpenseGroupId(expenseGroupId, PageRequest.of(page, size)).stream()
                 .map(expenseMapper::toExpenseResponseDto).toList();
     }
 
@@ -192,6 +213,12 @@ public class ExpenseServiceImpl implements ExpenseService {
     @Override
     public List<ExpenseGroupResponseDto> getAllExpenseGroups(Long userId) {
         return expenseGroupRepository.findByUserId(userId).stream()
+                .map(expenseMapper::toExpenseGroupResponseDto).toList();
+    }
+
+    @Override
+    public List<ExpenseGroupResponseDto> getAllExpenseGroups(Long userId, Integer page, Integer size) {
+        return expenseGroupRepository.findByUserId(userId, PageRequest.of(page, size)).stream()
                 .map(expenseMapper::toExpenseGroupResponseDto).toList();
     }
 
