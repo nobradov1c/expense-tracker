@@ -1,15 +1,14 @@
 package com.expensetracker.main.domain.expense.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.validation.Valid;
 
 import com.expensetracker.main.domain.expense.dto.ExpenseDto;
 import com.expensetracker.main.domain.expense.dto.ExpenseGroupDto;
+import com.expensetracker.main.domain.expense.dto.ExpenseGroupResponseDto;
+import com.expensetracker.main.domain.expense.dto.ExpenseResponseDto;
 import com.expensetracker.main.domain.expense.dto.TotalExpenseAmountDto;
-import com.expensetracker.main.domain.expense.entity.ExpenseEntity;
-import com.expensetracker.main.domain.expense.entity.ExpenseGroup;
 import com.expensetracker.main.domain.expense.service.ExpenseService;
 import com.expensetracker.main.domain.user.dto.UserAuthDto;
 
@@ -36,27 +35,22 @@ public class ExpenseController {
 
     // get all expenses
     @GetMapping
-    public List<ExpenseEntity> getAllExpenses(@AuthenticationPrincipal UserAuthDto authUser) {
+    public List<ExpenseResponseDto> getAllExpenses(@AuthenticationPrincipal UserAuthDto authUser) {
         return expenseService.getAllExpenses(authUser.getId());
     }
 
     // all by group
     @GetMapping("/all/{expenseGroupId}")
-    public List<ExpenseEntity> getAllExpensesByGroup(@AuthenticationPrincipal UserAuthDto authUser,
-                                                     @PathVariable Long expenseGroupId) {
+    public List<ExpenseResponseDto> getAllExpensesByGroup(@AuthenticationPrincipal UserAuthDto authUser,
+            @PathVariable Long expenseGroupId) {
         return expenseService.getAllExpensesByGroup(authUser.getId(), expenseGroupId);
     }
 
     // get by id
     @GetMapping("/{expenseId}")
-    public ResponseEntity<?> getExpenseById(@AuthenticationPrincipal UserAuthDto authUser,
+    public ExpenseResponseDto getExpenseById(@AuthenticationPrincipal UserAuthDto authUser,
             @PathVariable Long expenseId) {
-        Optional<ExpenseEntity> expense = expenseService.getExpenseById(authUser.getId(), expenseId);
-        if (expense.isPresent()) {
-            return new ResponseEntity<>(expense.get(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return expenseService.getExpenseById(authUser.getId(), expenseId);
     }
 
     @GetMapping("/total")
@@ -72,7 +66,7 @@ public class ExpenseController {
 
     // last 5 expense changes
     @GetMapping("/last-5-changes")
-    public List<ExpenseEntity> getLast5ExpenseChanges(@AuthenticationPrincipal UserAuthDto authUser) {
+    public List<ExpenseResponseDto> getLast5ExpenseChanges(@AuthenticationPrincipal UserAuthDto authUser) {
         return expenseService.getLast5ExpenseChanges(authUser.getId());
     }
 
@@ -117,13 +111,13 @@ public class ExpenseController {
 
     // get expense groups
     @GetMapping("/groups")
-    public List<ExpenseGroup> getExpenseGroups(@AuthenticationPrincipal UserAuthDto authUser) {
+    public List<ExpenseGroupResponseDto> getExpenseGroups(@AuthenticationPrincipal UserAuthDto authUser) {
         return expenseService.getAllExpenseGroups(authUser.getId());
     }
 
     // get expense group by id
     @GetMapping("/groups/{expenseGroupId}")
-    public ExpenseGroup getExpenseGroupById(@AuthenticationPrincipal UserAuthDto authUser,
+    public ExpenseGroupResponseDto getExpenseGroupById(@AuthenticationPrincipal UserAuthDto authUser,
             @PathVariable Long expenseGroupId) {
         return expenseService.getExpenseGroup(authUser.getId(), expenseGroupId);
     }
