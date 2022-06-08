@@ -2,6 +2,8 @@ package com.expensetracker.main.domain.expense.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+
 import com.expensetracker.main.domain.expense.dto.ExpenseDto;
 import com.expensetracker.main.domain.expense.dto.ExpenseGroupDto;
 import com.expensetracker.main.domain.expense.dto.ExpenseGroupResponseDto;
@@ -15,12 +17,12 @@ public interface ExpenseService {
     List<ExpenseResponseDto> getAllExpenses(Long userId);
 
     // paging
-    List<ExpenseResponseDto> getAllExpenses(Long userId, Integer page, Integer size);
+    Page<ExpenseResponseDto> getAllExpenses(Long userId, Integer page, Integer size);
 
     // all by group
     List<ExpenseResponseDto> getAllExpensesByGroup(Long userId, Long expenseGroupId);
 
-    List<ExpenseResponseDto> getAllExpensesByGroup(Long userId, Long expenseGroupId, Integer page, Integer size);
+    Page<ExpenseResponseDto> getAllExpensesByGroup(Long userId, Long expenseGroupId, Integer page, Integer size);
 
     // getExpenseById
     ExpenseResponseDto getExpenseById(Long userId, Long expenseId);
@@ -43,7 +45,7 @@ public interface ExpenseService {
 
     List<ExpenseGroupResponseDto> getAllExpenseGroups(Long userId);
 
-    List<ExpenseGroupResponseDto> getAllExpenseGroups(Long userId, Integer page, Integer size);
+    Page<ExpenseGroupResponseDto> getAllExpenseGroups(Long userId, Integer page, Integer size);
 
     ExpenseGroupResponseDto getExpenseGroup(Long userId, Long expenseGroupId);
 
