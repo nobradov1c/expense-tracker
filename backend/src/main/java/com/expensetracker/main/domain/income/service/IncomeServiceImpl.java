@@ -49,10 +49,10 @@ public class IncomeServiceImpl implements IncomeService {
     public TotalIncomeAmountDto getTotalIncomeAmount(Long userId) {
         BigDecimal totalAmount = new BigDecimal(0);
 
-        List<IncomeEntity> expenses = incomeRepository.findByUserId(userId);
+        List<IncomeEntity> incomes = incomeRepository.findByUserId(userId);
 
-        for (IncomeEntity expense : expenses) {
-            totalAmount = totalAmount.add(expense.getAmount());
+        for (IncomeEntity income : incomes) {
+            totalAmount = totalAmount.add(income.getAmount());
         }
 
         TotalIncomeAmountDto totalIncomeAmountDto = new TotalIncomeAmountDto(totalAmount);
@@ -70,10 +70,10 @@ public class IncomeServiceImpl implements IncomeService {
             throw new AppException(MyErrorMessages.INCOME_GROUP_NOT_FOUND);
         }
 
-        List<IncomeEntity> expenses = incomeRepository.findByUserIdAndIncomeGroupId(userId, incomeGroupId);
+        List<IncomeEntity> incomes = incomeRepository.findByUserIdAndIncomeGroupId(userId, incomeGroupId);
 
-        for (IncomeEntity expense : expenses) {
-            totalAmount = totalAmount.add(expense.getAmount());
+        for (IncomeEntity income : incomes) {
+            totalAmount = totalAmount.add(income.getAmount());
         }
 
         TotalIncomeAmountDto totalIncomeAmountDto = new TotalIncomeAmountDto(totalAmount, incomeGroupId);
@@ -87,8 +87,8 @@ public class IncomeServiceImpl implements IncomeService {
     }
 
     @Override
-    public Optional<IncomeEntity> getIncomeById(Long userId, Long expenseId) {
-        return incomeRepository.findByIdAndUserId(expenseId, userId);
+    public Optional<IncomeEntity> getIncomeById(Long userId, Long incomeId) {
+        return incomeRepository.findByIdAndUserId(incomeId, userId);
     }
 
     @Override
@@ -117,8 +117,8 @@ public class IncomeServiceImpl implements IncomeService {
 
     @Override
     @Transactional
-    public IncomeEntity updateIncome(Long userId, Long expenseId, IncomeDto incomeDto) {
-        IncomeEntity incomeEntity = incomeRepository.findById(expenseId)
+    public IncomeEntity updateIncome(Long userId, Long incomeId, IncomeDto incomeDto) {
+        IncomeEntity incomeEntity = incomeRepository.findById(incomeId)
                 .orElseThrow(() -> new AppException(MyErrorMessages.INCOME_NOT_FOUND));
 
         if (incomeDto.getAmount() != null) {
@@ -141,8 +141,8 @@ public class IncomeServiceImpl implements IncomeService {
 
     @Override
     @Transactional
-    public void deleteIncome(Long userId, Long expenseId) {
-        IncomeEntity incomeEntity = incomeRepository.findById(expenseId)
+    public void deleteIncome(Long userId, Long incomeId) {
+        IncomeEntity incomeEntity = incomeRepository.findById(incomeId)
                 .orElseThrow(() -> new AppException(MyErrorMessages.INCOME_NOT_FOUND));
 
         if (incomeEntity.getUser().getId().equals(userId)) {
