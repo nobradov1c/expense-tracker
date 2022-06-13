@@ -1,16 +1,25 @@
 # Expense tracker backend
 
-Java, Spring Boot, MySQL
+Java, Spring Boot, PostgreSQL
 
 How to run:
 
-- Start docker mysql database
+  -  `docker-compose up`
 
-  `docker run --name some-mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root -d mysql:latest`
+or manually:
+- Start docker postgresdb database
+
+  - `docker build -f docker/postgres.dockerfile -t mypostgredbimage:latest ./docker`
+
+  - `docker run --name mypostgredb -p 5432:5432 -d mypostgredbimage:latest`
 
 - maven
 
-  `.\mvnw.cmd spring-boot:run`
+  - `.\mvnw.cmd spring-boot:run`
+
+build:
+  - `.\mvnw clean package`
+  - `java -jar target/target/expensetracker.jar`
 
 Docs:
 
