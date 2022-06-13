@@ -41,11 +41,14 @@ public class ExpenseEntity extends BaseEntity {
     private UserEntity user;
 
     @Builder
-    public ExpenseEntity(Long id, String description, BigDecimal amount, ExpenseGroup expenseGroup, UserEntity user) {
+    public ExpenseEntity(Long id, String description, BigDecimal amount, ExpenseGroup expenseGroup, UserEntity user,
+            Long createdAt, Long updatedAt) {
         super(id);
         this.description = description;
         this.amount = amount;
         this.expenseGroup = expenseGroup;
         this.user = user;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 }

@@ -33,13 +33,13 @@ public class BaseEntity {
     @Column(name = "created_at")
     // @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     // protected LocalDateTime createdAt;
-    protected long createdAt;
+    protected Long createdAt;
 
     @LastModifiedDate
     @Column(name = "updated_at")
     // @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     // protected LocalDateTime updatedAt;
-    protected long updatedAt;
+    protected Long updatedAt;
 
     public BaseEntity(Long id) {
         this.id = id;
