@@ -1,0 +1,34 @@
+version: "3.9"
+services:
+  mysqldb:
+    build:
+      context: .
+      dockerfile: docker/mysql.dockerfile
+    container_name: mysqldb
+    restart: unless-stopped
+    ports:
+      - 3306:3306
+  # mysqldb:
+  #   image: mysql:8.0.28-oracle
+  #   container_name: mysqldb
+ 
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD=root
+  #     - MYSQL_USER=user
+  #     - MYSQL_PASSWORD=user
+  #     - MYSQL_DATABASE=expensetracker
+  #   ports:
+  #     - "3306:3306"
+  expensetracker:
+    depends_on:
+      - mysqldb
+    build:
+      context: .
+      dockerfile: docker/expensetracker.dockerfile
+    container_name: expensetracker
+    restart: on-failure
+    # restart: always
+    ports:
+      - 8080:8080
+    stdin_open: true
+    tty: true
