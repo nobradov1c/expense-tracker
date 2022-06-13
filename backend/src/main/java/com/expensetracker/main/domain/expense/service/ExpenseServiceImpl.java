@@ -129,6 +129,8 @@ public class ExpenseServiceImpl implements ExpenseService {
         expenseEntity.setAmount(expenseDto.getAmount());
         expenseEntity.setDescription(expenseDto.getDescription());
 
+        System.out.println("helou");
+
         if (expenseDto.getExpenseGroupId() != null) {
             ExpenseGroup expenseGroup = expenseGroupRepository.findById(expenseDto.getExpenseGroupId())
                     .orElseThrow(() -> new AppException(MyErrorMessages.EXPENSE_GROUP_NOT_FOUND));
@@ -145,7 +147,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
         expenseEntity.setUser(user);
 
-        expenseRepository.save(expenseEntity);
+        expenseEntity = expenseRepository.save(expenseEntity);
 
         user.getExpenses().add(expenseEntity);
         return expenseEntity;

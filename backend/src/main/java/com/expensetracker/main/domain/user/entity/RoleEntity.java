@@ -7,12 +7,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @Entity
 @Table(name = "roles")
@@ -23,4 +22,10 @@ public class RoleEntity {
 
     @Column(nullable = false, unique = true)
     private String title;
+
+    @Builder
+    public RoleEntity(Long id, String title) {
+        this.id = id;
+        this.title = title;
+    }
 }

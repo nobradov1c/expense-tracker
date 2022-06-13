@@ -33,7 +33,7 @@ public class AppExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorMessages> handleException(Exception exception) {
-        return responseErrorMessages(List.of("internal server error"), HttpStatus.UNPROCESSABLE_ENTITY);
+        return responseErrorMessages(List.of("internal server error"), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     private ResponseEntity<ErrorMessages> responseErrorMessages(List<String> messages, HttpStatus status) {
