@@ -1,24 +1,26 @@
 version: "3.9"
 services:
   postgresdb:
+    container_name: postgresdb
     build:
       context: .
       dockerfile: docker/postgres.dockerfile
-    container_name: postgresdb
+    env_file: ./.env
     restart: unless-stopped
     ports:
-      - 5432:5432
+      - $POSTGRESDB_LOCAL_PORT:$POSTGRESDB_DOCKER_PORT
   expensetracker:
+    container_name: expensetracker
     depends_on:
       - postgresdb
     build:
       context: .
       dockerfile: docker/expensetracker.dockerfile
-    container_name: expensetracker
+    env_file: ./.env
     environment:
       - spring_profiles_active=docker
     restart: on-failure
     ports:
-      - 8081:8080
+      - $SPRING_LOCAL_PORT:$SPRING_DOCKER_PORT
     stdin_open: true
     tty: true
