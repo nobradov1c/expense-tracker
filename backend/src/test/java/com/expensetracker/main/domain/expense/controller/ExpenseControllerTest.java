@@ -90,9 +90,6 @@ public class ExpenseControllerTest {
         // expenseEntity = expenseRepository.save(expenseEntity);
         when(expenseRepository.save(any(ExpenseEntity.class))).thenReturn(expenseEntity);
 
-        System.out.println("testCreateExpense");
-        System.out.println(objectMapper.writeValueAsString(expenseDto));
-
         mockMvc.perform(post("/expenses").contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(expenseDto)))
                 .andExpect(status().isCreated());
