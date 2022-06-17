@@ -8,6 +8,16 @@ How to run:
 - `docker-compose build`
 - `docker-compose up`
 
+Note:
+
+- Please run this once to initialize your databse:
+
+  - `INSERT INTO roles (id, title) VALUES (1, 'ADMIN');`
+
+  - `INSERT INTO roles (id, title) VALUES (2, 'USER');`
+
+- TODO: next time use enums for roles
+
 or manually:
 
 - Start docker postgresdb database
