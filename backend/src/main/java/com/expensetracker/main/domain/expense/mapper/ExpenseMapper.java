@@ -10,14 +10,19 @@ import com.expensetracker.main.domain.expense.entity.ExpenseGroup;
 @Component
 public class ExpenseMapper {
     public ExpenseResponseDto toExpenseResponseDto(ExpenseEntity expense) {
-        return ExpenseResponseDto.builder()
+        ExpenseResponseDto expenseResponseDto = ExpenseResponseDto.builder()
                 .id(expense.getId())
                 .createdAt(expense.getCreatedAt())
                 .updatedAt(expense.getUpdatedAt())
                 .description(expense.getDescription())
                 .amount(expense.getAmount())
-                .expenseGroupId(expense.getExpenseGroup().getId())
                 .build();
+
+        if (expense.getExpenseGroup() != null) {
+            expenseResponseDto.setExpenseGroupId(expense.getExpenseGroup().getId());
+        }
+
+        return expenseResponseDto;
     }
 
     public ExpenseGroupResponseDto toExpenseGroupResponseDto(ExpenseGroup expenseGroup) {

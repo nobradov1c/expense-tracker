@@ -10,14 +10,19 @@ import com.expensetracker.main.domain.income.entity.IncomeGroup;
 @Component
 public class IncomeMapper {
     public IncomeResponseDto toIncomeResponseDto(IncomeEntity income) {
-        return IncomeResponseDto.builder()
+        IncomeResponseDto incomeResponseDto = IncomeResponseDto.builder()
                 .id(income.getId())
                 .createdAt(income.getCreatedAt())
                 .updatedAt(income.getUpdatedAt())
                 .description(income.getDescription())
                 .amount(income.getAmount())
-                .incomeGroupId(income.getIncomeGroup().getId())
                 .build();
+
+        if (income.getIncomeGroup() != null) {
+            incomeResponseDto.setIncomeGroupId(income.getIncomeGroup().getId());
+        }
+
+        return incomeResponseDto;
     }
 
     public IncomeGroupResponseDto toIncomeGroupResponseDto(IncomeGroup incomeGroup) {
