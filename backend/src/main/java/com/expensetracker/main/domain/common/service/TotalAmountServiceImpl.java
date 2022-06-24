@@ -37,7 +37,11 @@ public class TotalAmountServiceImpl implements TotalAmountService {
             totalIncome = totalIncome.add(income.getAmount());
         }
 
-        TotalAmountDto totalAmountDto = new TotalAmountDto(totalIncome.subtract(totalExpenses));
+        TotalAmountDto totalAmountDto = TotalAmountDto.builder()
+                .totalAmount(totalIncome.subtract(totalExpenses))
+                .totalExpenses(totalExpenses)
+                .totalIncomes(totalIncome)
+                .build();
 
         return totalAmountDto;
     }
