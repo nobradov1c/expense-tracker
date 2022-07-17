@@ -1,0 +1,38 @@
+.splash-container {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  svg {
+    height: 100%;
+  }
+}
+
+.splash-screen {
+  width: 100vw;
+  display: flex;
+  justify-content: space-around;
+  align-content: center;
+  position: absolute;
+  top: 50%;
+  height: 300px;
+  margin-top: -150px;
+}
+
+.svg-container {
+  display: flex;
+}
+
+.svg-container path {
+  fill: transparent;
+  stroke: black;
+  stroke-width: 2px;
+  stroke-dasharray: 1600px;
+  stroke-dashoffset: 1600px;
+  animation: line-anim 5s ease forwards;
+}
+
+@keyframes line-anim {
+  to {
+    stroke-dashoffset: 0;
+  }
+}

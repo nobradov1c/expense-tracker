@@ -4,7 +4,6 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { Button } from "@mui/material";
 
 import DataTable from "../../components/DataTable/DataTable";
-import incomesColumns from "../../components/DataTable/config/incomesColumns";
 import {
   createNewIncome,
   deleteAnIncome,
@@ -12,23 +11,24 @@ import {
   getAllIncomes,
 } from "../../services/incomesService";
 import reactQueryConfig from "../../config/reactQueryConfig";
-import { FormMetaInterface } from "../../components/form/config/FormMetaInterface";
+import {
+  defaultFormMetaData,
+  FormMetaInterface,
+  submittedOnErrorFormMetaData,
+  submittedOnSuccessFormMetaData,
+  submittingFormMetaData,
+} from "../../components/form/config/FormMetaInterface";
 import { AxiosError } from "axios";
 import { TransactionFormInterface } from "../../models/forms/TransactionFormInterface";
 import MySnackbar from "../../components/MySnackbar/MySnackbar";
 import CreateTransactionFormDialog from "../../components/form/CreateTransactionFormDialog";
+import transactionColumns from "../../components/DataTable/config/transactionColumns";
 
 function IncomesPage() {
   const [createIncomeFormDialogOpen, setcreateIncomeFormDialogOpen] =
     useState<boolean>(false);
   const [createIncomeFormDialogMeta, setCreateIncomeFormDialogMeta] =
-    useState<FormMetaInterface>({
-      isSubmitting: false,
-      isSubmitted: false,
-      submitStatus: undefined,
-      submitStatusMessage: null,
-      errorResponse: null,
-    });
+    useState<FormMetaInterface>(defaultFormMetaData);
   const [helperErrors, setHelperErrors] = useState<string[] | null>(null);
 
   const navigate = useNavigate();
@@ -72,7 +72,7 @@ function IncomesPage() {
     handleDeleteAnIncomeMutation.mutate(id);
   };
 
-  const columns = incomesColumns({
+  const columns = transactionColumns({
     handleEditAction,
     handleDetailsAction,
     handleDeleteAction,
@@ -83,21 +83,16 @@ function IncomesPage() {
       queryClient.invalidateQueries("incomes");
 
       setCreateIncomeFormDialogMeta({
-        submitStatus: "success",
+        ...submittedOnSuccessFormMetaData,
         submitStatusMessage: "Income created successfully",
-        isSubmitting: false,
-        isSubmitted: true,
-        errorResponse: null,
       });
 
       setcreateIncomeFormDialogOpen(false);
     },
     onError: (error: AxiosError) => {
       setCreateIncomeFormDialogMeta({
-        submitStatus: "error",
+        ...submittedOnErrorFormMetaData,
         submitStatusMessage: "Error creating income",
-        isSubmitting: false,
-        isSubmitted: true,
         errorResponse: error,
       });
 
@@ -117,22 +112,13 @@ function IncomesPage() {
   });
 
   const onCreateIncomeFormDialogSubmit = (values: TransactionFormInterface) => {
-    setCreateIncomeFormDialogMeta({
-      isSubmitted: false,
-      isSubmitting: true,
-      submitStatus: undefined,
-      submitStatusMessage: null,
-      errorResponse: null,
-    });
+    setCreateIncomeFormDialogMeta(submittingFormMetaData);
 
     handleCreateNewIncomeMutation.mutate(values);
   };
 
   const handleSnackbarClose = () => {
-    setCreateIncomeFormDialogMeta({
-      ...createIncomeFormDialogMeta,
-      isSubmitted: false,
-    });
+    setCreateIncomeFormDialogMeta(defaultFormMetaData);
 
     setHelperErrors(null);
   };

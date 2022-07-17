@@ -6,14 +6,7 @@ import {
   ListSubheader,
   Snackbar,
 } from "@mui/material";
-
-type Props = {
-  isOpen: boolean;
-  handleSnackbarClose: () => void;
-  severity: undefined | "success" | "error";
-  message: string | null;
-  errors?: string[] | null;
-};
+import { MySnackbarInterface } from "./MySnackbarInterface";
 
 function MySnackbar({
   isOpen,
@@ -21,7 +14,7 @@ function MySnackbar({
   severity,
   message,
   errors = null,
-}: Props) {
+}: MySnackbarInterface & { handleSnackbarClose: () => void }) {
   if (message === null) {
     message = "Unknown status message";
   }

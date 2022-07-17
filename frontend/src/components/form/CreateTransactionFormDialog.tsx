@@ -11,8 +11,15 @@ type Props = {
   close: () => void;
   formMeta: FormMetaInterface;
   onSubmit: (values: TransactionFormInterface) => void;
+  initialValues?: TransactionFormInterface;
 
   groupOptions: GroupInterface[];
+};
+
+const defaultInitialValues: TransactionFormInterface = {
+  description: "",
+  amount: 0,
+  groupId: -1,
 };
 
 function CreateTransactionFormDialog({
@@ -21,6 +28,7 @@ function CreateTransactionFormDialog({
   close,
   formMeta,
   onSubmit: handleSubmit,
+  initialValues = defaultInitialValues,
   groupOptions,
 }: Props) {
   const onSubmit = async (
@@ -40,6 +48,7 @@ function CreateTransactionFormDialog({
           handleClose={close}
           onSubmit={onSubmit}
           groups={groupOptions || []}
+          initialValues={initialValues}
         />
       </DialogContent>
     </Dialog>

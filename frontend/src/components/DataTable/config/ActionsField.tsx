@@ -1,7 +1,7 @@
 import { GridRenderCellParams } from "@mui/x-data-grid";
-import ActionDelete from "../../action/ActionDelete";
-import ActionDetails from "../../action/ActionDetails";
-import ActionEdit from "../../action/ActionEdit";
+import ActionDelete from "../action/ActionDelete";
+import ActionDetails from "../action/ActionDetails";
+import ActionEdit from "../action/ActionEdit";
 
 type Props = {
   params: GridRenderCellParams<any, any, any>;
@@ -17,9 +17,7 @@ function ActionsField({
   handleDeleteAction,
 }: Props) {
   return (
-    <div
-      className="data-action-field-centered level is-mobile is-flex-grow-1 is-justify-content-center is-align-items-center"
-    >
+    <div className="data-action-field-centered level is-mobile is-flex-grow-1 is-justify-content-center is-align-items-center">
       <ActionEdit
         handleAction={(e, id = params.row.id) => {
           handleEditAction(id);

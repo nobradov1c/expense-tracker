@@ -4,31 +4,45 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { Button } from "@mui/material";
 
 import DataTable from "../../components/DataTable/DataTable";
-import expensesColumns from "../../components/DataTable/config/expensesColumns";
 import {
   createNewExpense,
   deleteAnExpense,
   getAllExpenseGroups,
   getAllExpenses,
+  getExpenseById,
+  updateExpenseById,
 } from "../../services/expensesService";
 import reactQueryConfig from "../../config/reactQueryConfig";
-import { FormMetaInterface } from "../../components/form/config/FormMetaInterface";
+import {
+  defaultFormMetaData,
+  FormMetaInterface,
+  submittedOnErrorFormMetaData,
+  submittedOnSuccessFormMetaData,
+  submittingFormMetaData,
+} from "../../components/form/config/FormMetaInterface";
 import { AxiosError } from "axios";
 import { TransactionFormInterface } from "../../models/forms/TransactionFormInterface";
 import MySnackbar from "../../components/MySnackbar/MySnackbar";
 import CreateTransactionFormDialog from "../../components/form/CreateTransactionFormDialog";
+import transactionColumns from "../../components/DataTable/config/transactionColumns";
+import { ExpenseInterface } from "../../data/models/ExpenseInterface";
+import ConfirmationDialog from "../../components/form/ConfirmationDialog";
 
 function ExpensesPage() {
   const [createExpenseFormDialogOpen, setCreateExpenseFormDialogOpen] =
     useState<boolean>(false);
+  const [updateExpenseFormDialogOpen, setUpdateExpenseFormDialogOpen] =
+    useState<boolean>(false);
   const [createExpenseFormDialogMeta, setCreateExpenseFormDialogMeta] =
-    useState<FormMetaInterface>({
-      isSubmitting: false,
-      isSubmitted: false,
-      submitStatus: undefined,
-      submitStatusMessage: null,
-      errorResponse: null,
-    });
+    useState<FormMetaInterface>(defaultFormMetaData);
+  const [updateFormTitle, setUpdateFormTitle] = useState<string>(
+    "Edit Expense with id: -1"
+  );
+  const [transactionId, setTransactionId] = useState<number>(-1);
+  const [transactionObject, setTransactionObject] = useState<ExpenseInterface>(
+    {} as ExpenseInterface
+  );
+
   const [helperErrors, setHelperErrors] = useState<string[] | null>(null);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -38,7 +52,11 @@ function ExpensesPage() {
     getAllExpenseGroups,
     reactQueryConfig
   );
-
+  const [confirmationDialogOpen, setConfirmationDialogOpen] =
+    useState<boolean>(false);
+  const [confirmationDialogTitle, setConfirmationDialogTitle] =
+    useState<string>("");
+  const [selectedId, setSelectedId] = useState<number>(-1);
   const {
     data: expenses,
     isFetching,
@@ -53,12 +71,85 @@ function ExpensesPage() {
     setCreateExpenseFormDialogOpen(false);
   };
 
+  const closeUpdateExpenseFormDialog = () => {
+    setUpdateExpenseFormDialogOpen(false);
+  };
+
   const handleDetailsAction = (id: number) => {
     navigate(`/expenses/${id}`);
   };
 
   const handleEditAction = (id: number) => {
-    // TODO: implement edit action
+    setTransactionId(id);
+
+    getExpenseById(id)
+      .then((transaction) => {
+        setTransactionObject(transaction);
+        setUpdateFormTitle(`Edit Expense with id: ${id}`);
+        setUpdateExpenseFormDialogOpen(true);
+      })
+      .catch((error) => {
+        setCreateExpenseFormDialogMeta({
+          ...submittedOnErrorFormMetaData,
+          submitStatusMessage: "Error fetching expense group",
+          errorResponse: error || "Error fetching expense group",
+        });
+
+        if (
+          createExpenseFormDialogMeta.errorResponse.response &&
+          createExpenseFormDialogMeta.errorResponse.response.data &&
+          createExpenseFormDialogMeta.errorResponse.response.data.errors
+        ) {
+          setHelperErrors(
+            createExpenseFormDialogMeta.errorResponse.response.data.errors
+          );
+        } else {
+          setHelperErrors(null);
+        }
+      });
+  };
+
+  const handleUpdateExpenseByIdMutation = useMutation(updateExpenseById, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("expenses");
+
+      setCreateExpenseFormDialogMeta({
+        ...submittedOnSuccessFormMetaData,
+        submitStatusMessage: "Expense updated successfully",
+      });
+
+      closeUpdateExpenseFormDialog();
+    },
+    onError: (error: AxiosError) => {
+      setCreateExpenseFormDialogMeta({
+        ...submittedOnErrorFormMetaData,
+        submitStatusMessage: "Error fetching expense group",
+        errorResponse: error || "Error fetching expense group",
+      });
+
+      if (
+        createExpenseFormDialogMeta.errorResponse.response &&
+        createExpenseFormDialogMeta.errorResponse.response.data &&
+        createExpenseFormDialogMeta.errorResponse.response.data.errors
+      ) {
+        setHelperErrors(
+          createExpenseFormDialogMeta.errorResponse.response.data.errors
+        );
+      } else {
+        setHelperErrors(null);
+      }
+    },
+  });
+
+  const onUpdateExpenseFormDialogSubmit = (
+    values: TransactionFormInterface
+  ) => {
+    setCreateExpenseFormDialogMeta(submittingFormMetaData);
+
+    handleUpdateExpenseByIdMutation.mutate({
+      id: transactionId,
+      values,
+    });
   };
 
   const handleDeleteAnExpenseMutation = useMutation(deleteAnExpense, {
@@ -68,10 +159,21 @@ function ExpensesPage() {
   });
 
   const handleDeleteAction = (id: number) => {
-    handleDeleteAnExpenseMutation.mutate(id);
+    setSelectedId(id);
+    setConfirmationDialogTitle("Delete Expense with id = " + id);
+    setConfirmationDialogOpen(true);
   };
 
-  const columns = expensesColumns({
+  const handleDeleteActionConfirmationNo = () => {
+    setConfirmationDialogOpen(false);
+  };
+
+  const handleDeleteActionConfirmationYes = () => {
+    handleDeleteAnExpenseMutation.mutate(selectedId);
+    setConfirmationDialogOpen(false);
+  };
+
+  const columns = transactionColumns({
     handleEditAction,
     handleDetailsAction,
     handleDeleteAction,
@@ -82,11 +184,8 @@ function ExpensesPage() {
       queryClient.invalidateQueries("expenses");
 
       setCreateExpenseFormDialogMeta({
-        submitStatus: "success",
+        ...submittedOnSuccessFormMetaData,
         submitStatusMessage: "Expense created successfully",
-        isSubmitting: false,
-        isSubmitted: true,
-        errorResponse: null,
       });
 
       // close form dialog
@@ -95,11 +194,9 @@ function ExpensesPage() {
 
     onError: (error: AxiosError) => {
       setCreateExpenseFormDialogMeta({
-        submitStatus: "error",
+        ...submittedOnErrorFormMetaData,
         submitStatusMessage: "Error creating expense",
         errorResponse: error,
-        isSubmitting: false,
-        isSubmitted: true,
       });
 
       if (
@@ -120,22 +217,13 @@ function ExpensesPage() {
   const onCreateExpenseFormDialogSubmit = (
     values: TransactionFormInterface
   ) => {
-    setCreateExpenseFormDialogMeta({
-      isSubmitted: false,
-      isSubmitting: true,
-      submitStatus: undefined,
-      submitStatusMessage: null,
-      errorResponse: null,
-    });
+    setCreateExpenseFormDialogMeta(submittingFormMetaData);
 
     handleCreateNewExpenseMutation.mutate(values);
   };
 
   const handleSnackbarClose = () => {
-    setCreateExpenseFormDialogMeta({
-      ...createExpenseFormDialogMeta,
-      isSubmitted: false,
-    });
+    setCreateExpenseFormDialogMeta(defaultFormMetaData);
 
     setHelperErrors(null);
   };
@@ -172,6 +260,26 @@ function ExpensesPage() {
           linearProgress={!isLoading}
         />
       </div>
+
+      <CreateTransactionFormDialog
+        title={updateFormTitle}
+        isOpen={updateExpenseFormDialogOpen}
+        close={closeUpdateExpenseFormDialog}
+        formMeta={createExpenseFormDialogMeta}
+        onSubmit={onUpdateExpenseFormDialogSubmit}
+        groupOptions={expenseGroups || []}
+        initialValues={{
+          ...transactionObject,
+          groupId: transactionObject.expenseGroupId || -1,
+        }}
+      />
+
+      <ConfirmationDialog
+        title={confirmationDialogTitle}
+        isOpen={confirmationDialogOpen}
+        handleYes={handleDeleteActionConfirmationYes}
+        handleNo={handleDeleteActionConfirmationNo}
+      />
 
       <MySnackbar
         isOpen={createExpenseFormDialogMeta.isSubmitted}

@@ -5,7 +5,7 @@ import { GroupTypeFormInterface } from "../models/forms/GroupTypeFormInterface";
 import { TransactionFormInterface } from "../models/forms/TransactionFormInterface";
 import expenseTrackerApi from "./config";
 
-export function getAllIncomes(): Promise<IncomeInterface[]> {
+export async function getAllIncomes(): Promise<IncomeInterface[]> {
   return expenseTrackerApi
     .get("/incomes")
     .then((response) => response.data)
@@ -14,7 +14,7 @@ export function getAllIncomes(): Promise<IncomeInterface[]> {
     });
 }
 
-export function deleteAnIncome(id: number): Promise<any> {
+export async function deleteAnIncome(id: number): Promise<any> {
   return expenseTrackerApi
     .delete(`/incomes/${id}`)
     .then((response) => response.data)
@@ -23,7 +23,7 @@ export function deleteAnIncome(id: number): Promise<any> {
     });
 }
 
-export function createNewIncome(
+export async function createNewIncome(
   transactionFormData: TransactionFormInterface
 ): Promise<CreateIncomeTransactionInterface> {
   const newIncome: CreateIncomeTransactionInterface = {
@@ -44,7 +44,7 @@ export function createNewIncome(
     });
 }
 
-export function getAllIncomeGroups(): Promise<GroupInterface[]> {
+export async function getAllIncomeGroups(): Promise<GroupInterface[]> {
   return expenseTrackerApi
     .get("/incomes/groups")
     .then((response) => response.data)
@@ -53,7 +53,7 @@ export function getAllIncomeGroups(): Promise<GroupInterface[]> {
     });
 }
 
-export function createNewIncomeGroup(
+export async function createNewIncomeGroup(
   groupTypeFormData: GroupTypeFormInterface
 ): Promise<GroupInterface> {
   const newIncomeGroup: GroupInterface = {
@@ -70,7 +70,7 @@ export function createNewIncomeGroup(
     });
 }
 
-export function deleteAnIncomeGroup(id: number): Promise<any> {
+export async function deleteAnIncomeGroup(id: number): Promise<any> {
   return expenseTrackerApi
     .delete(`/incomes/groups/${id}`)
     .then((res) => res.data)

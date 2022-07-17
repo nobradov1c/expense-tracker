@@ -1,7 +1,7 @@
 import { Container, ThemeProvider } from "@mui/material";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { ReactQueryDevtools } from "react-query/devtools";
+// import { ReactQueryDevtools } from "react-query/devtools";
 import AppFooter from "./components/layout/AppFooter/AppFooter";
 import AppHeader from "./components/layout/AppHeader/AppHeader";
 import ExpensePage from "./pages/expenses/ExpensePage";
@@ -49,7 +49,7 @@ function App() {
             </Routes>
           </Container>
           <AppFooter />
-          <ReactQueryDevtools initialIsOpen={false} />
+          {/* <ReactQueryDevtools initialIsOpen={false} /> */}
         </QueryClientProvider>
       </BrowserRouter>
     </ThemeProvider>

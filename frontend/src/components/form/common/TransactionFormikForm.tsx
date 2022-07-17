@@ -19,9 +19,10 @@ type Props = {
     }>
   ) => Promise<void>;
   groups: GroupInterface[];
+  initialValues?: TransactionFormInterface;
 };
 
-const initialValues = {
+const defaultInitialValues = {
   description: "",
   amount: 0,
   groupId: -1,
@@ -32,12 +33,14 @@ function TransactionFormikForm({
   handleClose,
   onSubmit,
   groups,
+  initialValues = defaultInitialValues,
 }: Props) {
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={transactionValidationSchema}
       onSubmit={onSubmit}
+      validateOnMount={true}
     >
       {({ isValid, dirty }) => (
         <Form className="level is-mobile is-flex-direction-column">
@@ -72,7 +75,7 @@ function TransactionFormikForm({
             <Button onClick={handleClose}>Cancel</Button>
             <LoadingButton
               loading={isLoading}
-              disabled={!isValid || !dirty}
+              disabled={!isValid}
               type="submit"
             >
               Submit

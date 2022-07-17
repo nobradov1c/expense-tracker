@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
 
 import DataTable from "../../components/DataTable/DataTable";
-import incomeGroupsColumns from "../../components/DataTable/config/incomeGroupsColumns";
 import {
   createNewIncomeGroup,
   deleteAnIncomeGroup,
@@ -11,23 +10,24 @@ import {
 } from "../../services/incomesService";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import reactQueryConfig from "../../config/reactQueryConfig";
-import { FormMetaInterface } from "../../components/form/config/FormMetaInterface";
+import {
+  defaultFormMetaData,
+  FormMetaInterface,
+  submittedOnErrorFormMetaData,
+  submittedOnSuccessFormMetaData,
+  submittingFormMetaData,
+} from "../../components/form/config/FormMetaInterface";
 import { AxiosError } from "axios";
 import { GroupTypeFormInterface } from "../../models/forms/GroupTypeFormInterface";
 import MySnackbar from "../../components/MySnackbar/MySnackbar";
 import CreateGroupFormDialog from "../../components/form/CreateGroupFormDialog";
+import groupsColumns from "../../components/DataTable/config/groupsColumns";
 
 function IncomeGroupsPage() {
   const [createIncomeGroupFormDialogOpen, setCreateIncomeGroupFormDialogOpen] =
     useState<boolean>(false);
   const [createIncomeGroupFormDialogMeta, setCreateIncomeGroupFormDialogMeta] =
-    useState<FormMetaInterface>({
-      isSubmitting: false,
-      isSubmitted: false,
-      submitStatus: undefined,
-      submitStatusMessage: null,
-      errorResponse: null,
-    });
+    useState<FormMetaInterface>(defaultFormMetaData);
   const [helperErrors, setHelperErrors] = useState<string[] | null>(null);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -65,7 +65,7 @@ function IncomeGroupsPage() {
     handleDeleteAnIncomeGroupMutation.mutate(id);
   };
 
-  const columns = incomeGroupsColumns({
+  const columns = groupsColumns({
     handleEditAction,
     handleDetailsAction,
     handleDeleteAction,
@@ -76,11 +76,8 @@ function IncomeGroupsPage() {
       queryClient.invalidateQueries("incomeGroups");
 
       setCreateIncomeGroupFormDialogMeta({
-        submitStatus: "success",
+        ...submittedOnSuccessFormMetaData,
         submitStatusMessage: "Expense group created successfully",
-        isSubmitting: false,
-        isSubmitted: true,
-        errorResponse: null,
       });
 
       setCreateIncomeGroupFormDialogOpen(false);
@@ -88,10 +85,8 @@ function IncomeGroupsPage() {
 
     onError: (error: AxiosError) => {
       setCreateIncomeGroupFormDialogMeta({
-        submitStatus: "error",
+        ...submittedOnErrorFormMetaData,
         submitStatusMessage: "Error creating expense group",
-        isSubmitting: false,
-        isSubmitted: true,
         errorResponse: error,
       });
 
@@ -113,22 +108,13 @@ function IncomeGroupsPage() {
   const handleCreateIncomeGroupFormSubmit = (
     values: GroupTypeFormInterface
   ) => {
-    setCreateIncomeGroupFormDialogMeta({
-      isSubmitted: false,
-      isSubmitting: true,
-      submitStatus: undefined,
-      submitStatusMessage: null,
-      errorResponse: null,
-    });
+    setCreateIncomeGroupFormDialogMeta(submittingFormMetaData);
 
     handleCreateNewIncomeGroupMutation.mutate(values);
   };
 
   const handleSnackbarClose = () => {
-    setCreateIncomeGroupFormDialogMeta({
-      ...createIncomeGroupFormDialogMeta,
-      isSubmitted: false,
-    });
+    setCreateIncomeGroupFormDialogMeta(defaultFormMetaData);
 
     setHelperErrors(null);
   };

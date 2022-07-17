@@ -5,17 +5,27 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { Button } from "@mui/material";
 
 import DataTable from "../../components/DataTable/DataTable";
-import expenseGroupsColumns from "../../components/DataTable/config/expenseGroupsColumns";
 import {
   createNewExpenseGroup,
   deleteAnExpenseGroup,
   getAllExpenseGroups,
+  getExpenseGroupById,
+  updateExpenseGroupById,
 } from "../../services/expensesService";
 import reactQueryConfig from "../../config/reactQueryConfig";
-import { FormMetaInterface } from "../../components/form/config/FormMetaInterface";
+import {
+  defaultFormMetaData,
+  FormMetaInterface,
+  submittedOnErrorFormMetaData,
+  submittedOnSuccessFormMetaData,
+  submittingFormMetaData,
+} from "../../components/form/config/FormMetaInterface";
 import { GroupTypeFormInterface } from "../../models/forms/GroupTypeFormInterface";
 import MySnackbar from "../../components/MySnackbar/MySnackbar";
 import CreateGroupFormDialog from "../../components/form/CreateGroupFormDialog";
+import groupsColumns from "../../components/DataTable/config/groupsColumns";
+import { GroupInterface } from "../../data/models/GroupInterface";
+import ConfirmationDialog from "../../components/form/ConfirmationDialog";
 
 function ExpenseGroupsPage() {
   const [
@@ -23,19 +33,26 @@ function ExpenseGroupsPage() {
     setCreateExpenseGroupFormDialogOpen,
   ] = useState<boolean>(false);
   const [
+    updateExpenseGroupFormDialogOpen,
+    setUpdateExpenseGroupFormDialogOpen,
+  ] = useState<boolean>(false);
+  const [
     createExpenseGroupFormDialogMeta,
     setCreateExpenseGroupFormDialogMeta,
-  ] = useState<FormMetaInterface>({
-    isSubmitting: false,
-    isSubmitted: false,
-    submitStatus: undefined,
-    submitStatusMessage: null,
-    errorResponse: null,
-  });
+  ] = useState<FormMetaInterface>(defaultFormMetaData);
   const [helperErrors, setHelperErrors] = useState<string[] | null>(null);
+  const [groupId, setGroupId] = useState<number>(-1);
+  const [groupObject, setGroupObject] = useState<GroupInterface>(
+    {} as GroupInterface
+  );
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
+  const [confirmationDialogOpen, setConfirmationDialogOpen] =
+    useState<boolean>(false);
+  const [confirmationDialogTitle, setConfirmationDialogTitle] =
+    useState<string>("");
+  const [selectedId, setSelectedId] = useState<number>(-1);
   const {
     data: expenseGroups,
     isFetching,
@@ -50,12 +67,41 @@ function ExpenseGroupsPage() {
     setCreateExpenseGroupFormDialogOpen(false);
   };
 
+  const closeUpdateExpenseGroupFormDialog = () => {
+    setUpdateExpenseGroupFormDialogOpen(false);
+  };
+
   const handleDetailsAction = (id: number) => {
     navigate(`/expense-groups/${id}`);
   };
 
   const handleEditAction = (id: number) => {
-    // TODO: implement edit action
+    setGroupId(id);
+
+    getExpenseGroupById(id)
+      .then((groupObject) => {
+        setGroupObject(groupObject);
+        setUpdateExpenseGroupFormDialogOpen(true);
+      })
+      .catch((error) => {
+        setCreateExpenseGroupFormDialogMeta({
+          ...submittedOnErrorFormMetaData,
+          submitStatusMessage: "Error fetching expense group",
+          errorResponse: error || "Error fetching expense group",
+        });
+
+        if (
+          createExpenseGroupFormDialogMeta.errorResponse.response &&
+          createExpenseGroupFormDialogMeta.errorResponse.response.data &&
+          createExpenseGroupFormDialogMeta.errorResponse.response.data.errors
+        ) {
+          setHelperErrors(
+            createExpenseGroupFormDialogMeta.errorResponse.response.data.errors
+          );
+        } else {
+          setHelperErrors(null);
+        }
+      });
   };
 
   const handleDeleteAnExpenseGroupMutation = useMutation(deleteAnExpenseGroup, {
@@ -66,10 +112,21 @@ function ExpenseGroupsPage() {
   });
 
   const handleDeleteAction = (id: number) => {
-    handleDeleteAnExpenseGroupMutation.mutate(id);
+    setSelectedId(id);
+    setConfirmationDialogTitle("Delete Expense Group with id = " + id);
+    setConfirmationDialogOpen(true);
   };
 
-  const columns = expenseGroupsColumns({
+  const handleDeleteActionConfirmationNo = () => {
+    setConfirmationDialogOpen(false);
+  };
+
+  const handleDeleteActionConfirmationYes = () => {
+    handleDeleteAnExpenseGroupMutation.mutate(selectedId);
+    setConfirmationDialogOpen(false);
+  };
+
+  const columns = groupsColumns({
     handleEditAction,
     handleDetailsAction,
     handleDeleteAction,
@@ -82,11 +139,8 @@ function ExpenseGroupsPage() {
         queryClient.invalidateQueries("expenseGroups");
 
         setCreateExpenseGroupFormDialogMeta({
-          submitStatus: "success",
+          ...submittedOnSuccessFormMetaData,
           submitStatusMessage: "Expense group created successfully",
-          isSubmitting: false,
-          isSubmitted: true,
-          errorResponse: null,
         });
 
         // close form dialog
@@ -94,11 +148,45 @@ function ExpenseGroupsPage() {
       },
       onError: (error: AxiosError) => {
         setCreateExpenseGroupFormDialogMeta({
-          submitStatus: "error",
+          ...submittedOnErrorFormMetaData,
           submitStatusMessage: "Error creating expense group",
           errorResponse: error,
-          isSubmitting: false,
-          isSubmitted: true,
+        });
+
+        if (
+          createExpenseGroupFormDialogMeta.errorResponse.response &&
+          createExpenseGroupFormDialogMeta.errorResponse.response.data &&
+          createExpenseGroupFormDialogMeta.errorResponse.response.data.errors
+        ) {
+          setHelperErrors(
+            createExpenseGroupFormDialogMeta.errorResponse.response.data.errors
+          );
+        } else {
+          setHelperErrors(null);
+        }
+      },
+    }
+  );
+
+  const handleUpdateExpenseGroupByIdMutation = useMutation(
+    updateExpenseGroupById,
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("expenseGroups");
+
+        setCreateExpenseGroupFormDialogMeta({
+          ...submittedOnSuccessFormMetaData,
+          submitStatusMessage: "Expense group updated successfully",
+        });
+
+        closeUpdateExpenseGroupFormDialog();
+      },
+
+      onError: (error: AxiosError) => {
+        setCreateExpenseGroupFormDialogMeta({
+          ...submittedOnErrorFormMetaData,
+          submitStatusMessage: "Error updating expense group",
+          errorResponse: error,
         });
 
         if (
@@ -120,22 +208,22 @@ function ExpenseGroupsPage() {
     values: GroupTypeFormInterface
   ) => {
     // reset form meta
-    setCreateExpenseGroupFormDialogMeta({
-      isSubmitted: false,
-      isSubmitting: true,
-      submitStatus: undefined,
-      submitStatusMessage: null,
-      errorResponse: null,
-    });
+    setCreateExpenseGroupFormDialogMeta(submittingFormMetaData);
 
     handleCreateNewExpenseGroupMutation.mutate(values);
   };
 
+  const onUpdateExpenseGroupFormDialogSubmit = (
+    values: GroupTypeFormInterface
+  ) => {
+    // reset form meta
+    setCreateExpenseGroupFormDialogMeta(submittingFormMetaData);
+
+    handleUpdateExpenseGroupByIdMutation.mutate({ id: groupId, values });
+  };
+
   const handleSnackbarClose = () => {
-    setCreateExpenseGroupFormDialogMeta({
-      ...createExpenseGroupFormDialogMeta,
-      isSubmitted: false,
-    });
+    setCreateExpenseGroupFormDialogMeta(defaultFormMetaData);
 
     setHelperErrors(null);
   };
@@ -175,6 +263,23 @@ function ExpenseGroupsPage() {
           linearProgress={!isLoading}
         />
       </div>
+
+      {/* edit form dialog */}
+      <CreateGroupFormDialog
+        title={`Edit Expense ${groupObject.name}`}
+        isOpen={updateExpenseGroupFormDialogOpen}
+        close={closeUpdateExpenseGroupFormDialog}
+        formMeta={createExpenseGroupFormDialogMeta}
+        onSubmit={onUpdateExpenseGroupFormDialogSubmit}
+        initialValues={groupObject}
+      />
+
+      <ConfirmationDialog
+        title={confirmationDialogTitle}
+        isOpen={confirmationDialogOpen}
+        handleYes={handleDeleteActionConfirmationYes}
+        handleNo={handleDeleteActionConfirmationNo}
+      />
 
       <MySnackbar
         isOpen={createExpenseGroupFormDialogMeta.isSubmitted}

@@ -10,6 +10,11 @@ type Props = {
   close: () => void;
   formMeta: FormMetaInterface;
   onSubmit: (values: GroupTypeFormInterface) => void;
+  initialValues?: GroupTypeFormInterface;
+};
+const defaultInitialValues: GroupTypeFormInterface = {
+  name: "",
+  description: "",
 };
 
 function CreateGroupFormDialog({
@@ -18,6 +23,7 @@ function CreateGroupFormDialog({
   close,
   formMeta,
   onSubmit: handleSubmit,
+  initialValues = defaultInitialValues,
 }: Props) {
   const onSubmit = async (
     values: GroupTypeFormInterface
@@ -35,6 +41,7 @@ function CreateGroupFormDialog({
           isLoading={formMeta.isSubmitting}
           handleClose={close}
           onSubmit={onSubmit}
+          initialValues={initialValues}
         />
       </DialogContent>
     </Dialog>

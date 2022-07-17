@@ -1,66 +1,52 @@
-import AccessAlarmIcon from "@mui/icons-material/AccessAlarm";
-import ThreeDRotation from "@mui/icons-material/ThreeDRotation";
-import { Button } from "@mui/material";
+import React from "react";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { Pie } from "react-chartjs-2";
+
+import { useQuery } from "react-query";
+import { getTotal } from "../services/common";
+
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 function HomePage() {
+  const {
+    data: total,
+    isError,
+    isFetching,
+  } = useQuery("total", getTotal, { cacheTime: 0, staleTime: 0 });
+
+  let data = {
+    labels: ["Expenses", "Incomes"],
+    datasets: [
+      {
+        data: [0, 0],
+        backgroundColor: ["rgba(255, 99, 132, 0.2)", "rgba(54, 162, 235, 0.2)"],
+        borderColor: ["rgba(255, 99, 132, 1)", "rgba(54, 162, 235, 1)"],
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  let content = "Loading...";
+  if (total && total.totalAmount) {
+    const sign = total.totalAmount > 0 ? "+" : "";
+    content = `Total: ${sign}${total.totalAmount}`;
+    data.datasets[0].data = [total.totalExpenses, total.totalIncomes];
+  } else if (isFetching) {
+    content = "Loading...";
+  } else if (isError) {
+    content = "Error fetching total";
+  }
+
   return (
     <>
-      <h1>Home page works</h1>
+      <h1>Best expense tracker ever</h1>
 
-      <div className="buttons">
-        <button className="button is-primary">Primary</button>
-        <button className="button is-link">Link</button>
+      <p>{content}</p>
+      <div className="content is-flex is-align-items-center is-justify-content-center">
+        <div className="pie-container">
+          <Pie data={data} />
+        </div>
       </div>
-
-      <div className="buttons">
-        <button className="button is-info">Info</button>
-        <button className="button is-success">Success</button>
-        <button className="button is-warning">Warning</button>
-        <button className="button is-danger">Danger</button>
-      </div>
-
-      <div className="notification is-primary">
-        <button className="delete"></button>
-        Primar lorem ipsum dolor sit amet, consectetur adipiscing elit lorem
-        ipsum dolor. <strong>Pellentesque risus mi</strong>, tempus quis
-        placerat ut, porta nec nulla. Vestibulum rhoncus ac ex sit amet
-        fringilla. Nullam gravida purus diam, et dictum efficitur.
-      </div>
-
-      <div className="notification is-primary">
-        <button className="delete"></button>
-        Primar lorem ipsum dolor sit amet, consectetur adipiscing elit lorem
-        ipsum dolor. <strong>Pellentesque risus mi</strong>, tempus quis
-        placerat ut, porta nec nulla. Vestibulum rhoncus ac ex sit amet
-        fringilla. Nullam gravida purus diam, et dictum efficitur.
-      </div>
-
-      <div className="notification is-primary">
-        <button className="delete"></button>
-        Primar lorem ipsum dolor sit amet, consectetur adipiscing elit lorem
-        ipsum dolor. <strong>Pellentesque risus mi</strong>, tempus quis
-        placerat ut, porta nec nulla. Vestibulum rhoncus ac ex sit amet
-        fringilla. Nullam gravida purus diam, et dictum efficitur.
-      </div>
-
-      <div className="notification is-primary">
-        <button className="delete"></button>
-        Primar lorem ipsum dolor sit amet, consectetur adipiscing elit lorem
-        ipsum dolor. <strong>Pellentesque risus mi</strong>, tempus quis
-        placerat ut, porta nec nulla. Vestibulum rhoncus ac ex sit amet
-        fringilla. Nullam gravida purus diam, et dictum efficitur.
-      </div>
-
-      <Button color="secondary">Secondary</Button>
-      <Button variant="contained" color="success">
-        Success
-      </Button>
-      <Button variant="outlined" color="error">
-        Error
-      </Button>
-
-      <AccessAlarmIcon />
-      <ThreeDRotation />
     </>
   );
 }

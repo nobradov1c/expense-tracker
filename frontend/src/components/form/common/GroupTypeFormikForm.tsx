@@ -15,19 +15,26 @@ type Props = {
       description: string;
     }>
   ) => Promise<void>;
+  initialValues?: GroupTypeFormInterface;
 };
 
-const initialValues = {
+const defaultInitialValues = {
   name: "",
   description: "",
 };
 
-function GroupTypeFormikForm({ isLoading, handleClose, onSubmit }: Props) {
+function GroupTypeFormikForm({
+  isLoading,
+  handleClose,
+  onSubmit,
+  initialValues = defaultInitialValues,
+}: Props) {
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={groupTypeValidationSchema}
       onSubmit={onSubmit}
+      validateOnMount={true}
     >
       {({ isValid, dirty }) => (
         <Form className="level is-mobile is-flex-direction-column">
@@ -53,7 +60,7 @@ function GroupTypeFormikForm({ isLoading, handleClose, onSubmit }: Props) {
             <Button onClick={handleClose}>Cancel</Button>
             <LoadingButton
               loading={isLoading}
-              disabled={!isValid || !dirty}
+              disabled={!isValid}
               type="submit"
             >
               Submit

@@ -7,6 +7,7 @@ import "@fontsource/roboto/700.css";
 import App from "./App";
 import "./styles/index.sass";
 import { CssBaseline } from "@mui/material";
+import WithSplashscreen from "./components/Splashscreen/WithSplashscreen";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -14,6 +15,7 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <CssBaseline />
-    <App />
+    {/* <App /> */}
+    <WithSplashscreen WrappedComponent={App} />
   </React.StrictMode>
 );
