@@ -1,0 +1,38 @@
+@import "../../../styles/bulma-theme.sass"
+
+$link-active: #363636
+
+.app-header
+  height: 64px
+  overflow: hidden
+  position: fixed !important
+  z-index: 10
+  width: 100%
+  .navbar-brand
+    height: 100%
+    a
+      color: $white
+      text-decoration: none
+      height: 100%
+      &:focus
+        background-color: none !important
+    a>*
+        color: $white
+
+  .navbar-start a
+    color: $white
+    text-decoration: none
+    &:focus
+      background-color: $link-active !important
+      color: $link !important
+    &:hover
+      color: $link !important
+      background-color: $link-active !important
+    &.active
+      color: $primary
+      background-color: $link-active !important
+      cursor: default
+      &:hover, &:focus
+        color: $primary !important
+  .navbar-end a
+    text-decoration: none

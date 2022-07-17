@@ -1,0 +1,25 @@
+@import "./bulma-theme.sass"
+@import "./custom-bulma.sass"
+
+body
+  min-height: 100vh
+  overflow-x: hidden
+  overflow-y: scroll
+  background-color: #dbdbdb !important
+
+  #root
+    display: flex
+    flex-direction: column
+    flex-grow: 1
+    min-height: 100vh
+
+    .app-main
+      margin-top: 64px
+      padding-bottom: 48px
+      background-color: crimson
+      .data-table-container
+        height: 400px
+
+      .MuiAlert-message
+        .MuiList-root, .MuiListSubheader-root
+          background-color: transparent
